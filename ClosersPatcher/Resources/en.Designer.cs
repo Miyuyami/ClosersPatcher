@@ -450,7 +450,7 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Soulworker Patcher.
+        ///   Looks up a localized string similar to Closers Patcher.
         /// </summary>
         internal static string notify_text {
             get {
