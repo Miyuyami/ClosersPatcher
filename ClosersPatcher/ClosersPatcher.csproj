@@ -23,8 +23,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/ClosersPatcher/ClosersPatcher/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/ClosersPatcher/ClosersPatcher/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/ClosersPatcher/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/ClosersPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Closers Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
