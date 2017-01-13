@@ -41,7 +41,7 @@ namespace ClosersPatcher.Forms
             this.labelVersion.Text = $"Version {AssemblyAccessor.Version}";
             this.textBoxDescription.Text = StringLoader.GetText("patcher_description");
             this.linkLabelWebsite.Links.Add(0, this.linkLabelWebsite.Text.Length, Urls.ClosersWebsite);
-            this.logoPictureBox.ImageLocation = $"https://github.com/Miyuyami/ClosersPatcher/raw/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
+            this.logoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
         }
 
         private void LinkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

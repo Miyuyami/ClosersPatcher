@@ -20,9 +20,9 @@ namespace ClosersPatcher.Helpers.GlobalVariables
 {
     public static class Urls
     {
-        public const string ClosersWebsite = "https://miyuyami.github.io/closers_patcher.html";
+        public const string ClosersWebsite = "http://closershq.com/Discussion-Unofficial-Closers-English-Translation-Project";
         public const string ClosersHome = "https://clogin.nexon.com/common/clogin.aspx?redirect=http%3a%2f%2fclosers.nexon.com%2f";
-        public const string TranslationHome = "https://github.com/Miyuyami/ClosersPatcher/raw/master/Translations/";
+        public const string TranslationHome = "https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/Translations/";
         public const string ClosersSettingsHome = "http://closers.dn.nexoncdn.co.kr/CLOSERS_LIVE_NEXON/";
     }
 }
