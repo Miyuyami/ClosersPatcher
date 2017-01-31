@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher
 {
-    static class Program
+    internal static class Program
     {
         [STAThread]
         static void Main()
@@ -71,7 +71,7 @@ namespace ClosersPatcher
 
         private class SingleInstanceController : Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase
         {
-            public SingleInstanceController()
+            internal SingleInstanceController()
             {
                 this.IsSingleInstance = true;
                 this.StartupNextInstance += new Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventHandler(this.SingleInstanceController_StartupNextInstance);

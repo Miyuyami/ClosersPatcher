@@ -23,9 +23,9 @@ using System.Reflection;
 
 namespace ClosersPatcher.Helpers.GlobalVariables
 {
-    public static class UserSettings
+    internal static class UserSettings
     {
-        public static string PatcherPath
+        internal static string PatcherPath
         {
             get
             {
@@ -53,7 +53,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string GamePath
+        internal static string GamePath
         {
             get
             {
@@ -68,7 +68,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string LanguageName
+        internal static string LanguageName
         {
             get
             {
@@ -81,7 +81,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string UILanguageCode
+        internal static string UILanguageCode
         {
             get
             {
@@ -95,7 +95,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static bool HasSound
+        internal static bool HasSound
         {
             get
             {

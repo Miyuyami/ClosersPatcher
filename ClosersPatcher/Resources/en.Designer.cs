@@ -97,6 +97,15 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply Patch.
+        /// </summary>
+        internal static string button_apply_patch {
+            get {
+                return ResourceManager.GetString("button_apply_patch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string button_cancel {
@@ -160,6 +169,15 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove Patch.
+        /// </summary>
+        internal static string button_remove_patch {
+            get {
+                return ResourceManager.GetString("button_remove_patch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select your Closers game client folder..
         /// </summary>
         internal static string dialog_folder_change_game_dir {
@@ -183,6 +201,16 @@ namespace ClosersPatcher.Resources {
         internal static string exception_already_latest_translation {
             get {
                 return ResourceManager.GetString("exception_already_latest_translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no backup available for your client version.
+        ///Try again later when the backup is updated..
+        /// </summary>
+        internal static string exception_backup_version_not_supported {
+            get {
+                return ResourceManager.GetString("exception_backup_version_not_supported", resourceCulture);
             }
         }
         
@@ -232,6 +260,15 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closers installation not found..
+        /// </summary>
+        internal static string exception_game_install_not_found {
+            get {
+                return ResourceManager.GetString("exception_game_install_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to upload log file..
         /// </summary>
         internal static string exception_log_file_failed {
@@ -246,6 +283,15 @@ namespace ClosersPatcher.Resources {
         internal static string exception_log_not_exist {
             get {
                 return ResourceManager.GetString("exception_log_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no backup to restore..
+        /// </summary>
+        internal static string exception_no_backup {
+            get {
+                return ResourceManager.GetString("exception_no_backup", resourceCulture);
             }
         }
         
@@ -278,6 +324,15 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A translation is already applied..
+        /// </summary>
+        internal static string exception_translation_already_applied {
+            get {
+                return ResourceManager.GetString("exception_translation_already_applied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no translation available for your client version.
         ///Try again later when the translation is updated..
         /// </summary>
@@ -297,7 +352,7 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Patch.
+        ///   Looks up a localized string similar to Force Download Translations.
         /// </summary>
         internal static string form_force_patch {
             get {
@@ -333,6 +388,15 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download Original Files.
+        /// </summary>
+        internal static string form_original_files {
+            get {
+                return ResourceManager.GetString("form_original_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         internal static string form_refresh {
@@ -347,6 +411,15 @@ namespace ClosersPatcher.Resources {
         internal static string form_settings {
             get {
                 return ResourceManager.GetString("form_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applying Patch....
+        /// </summary>
+        internal static string form_status_apply_patch {
+            get {
+                return ResourceManager.GetString("form_status_apply_patch", resourceCulture);
             }
         }
         
@@ -374,6 +447,15 @@ namespace ClosersPatcher.Resources {
         internal static string form_status_prepare {
             get {
                 return ResourceManager.GetString("form_status_prepare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing Patch....
+        /// </summary>
+        internal static string form_status_remove_patch {
+            get {
+                return ResourceManager.GetString("form_status_remove_patch", resourceCulture);
             }
         }
         

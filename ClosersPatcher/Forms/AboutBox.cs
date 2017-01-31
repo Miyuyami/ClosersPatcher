@@ -23,11 +23,11 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
 {
-    partial class AboutBox : Form
+    internal partial class AboutBox : Form
     {
         private int ImagesCount = 31;
 
-        public AboutBox()
+        internal AboutBox()
         {
             InitializeComponent();
             InitializeTextComponent();

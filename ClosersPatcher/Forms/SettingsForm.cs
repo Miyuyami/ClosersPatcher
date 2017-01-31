@@ -27,14 +27,14 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
 {
-    public partial class SettingsForm : Form
+    internal partial class SettingsForm : Form
     {
         private bool PendingRestart;
         private string GameClientDirectory;
         private string PatcherWorkingDirectory;
         private string UILanguage;
 
-        public SettingsForm()
+        internal SettingsForm()
         {
             InitializeComponent();
             InitializeTextComponent();

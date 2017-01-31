@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
 {
-    public partial class MainForm
+    internal partial class MainForm
     {
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -55,30 +55,35 @@ namespace ClosersPatcher.Forms
                 }
             }
 
-            StartupBackupCheck(this.ComboBoxLanguages.SelectedItem as Language);
+            Directory.CreateDirectory(Strings.FolderName.Backup);
         }
 
-        private void ForceStripMenuItem_Click(object sender, EventArgs e)
+        private void ForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Language language = this.ComboBoxLanguages.SelectedItem as Language;
 
-            DeleteTranslationIni(language);
-            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+            ResetTranslation(language);
 
             this.CurrentState = State.Download;
             this.Downloader.Run(this.ComboBoxLanguages.SelectedItem as Language);
         }
 
+        private void OriginalFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.CurrentState = State.Download;
+            this.Downloader.Run(null);
+        }
+
         private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.ComboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
-			{
+            {
                 this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
-			}
+            }
             else
-			{
+            {
                 this.LabelNewTranslations.Text = String.Empty;
-			}
+            }
         }
 
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -193,18 +198,25 @@ namespace ClosersPatcher.Forms
             }
         }
 
-        private void ButtonPlay_Click(object sender, EventArgs e)
+        private void ButtonApplyPatch_Click(object sender, EventArgs e)
         {
             switch (this.CurrentState)
             {
                 case State.Idle:
-                    this.CurrentState = State.Prepare;
-                    this.GameStarter.Run(this.ComboBoxLanguages.SelectedItem as Language);
+                    this.CurrentState = State.ApplyPatch;
+                    this.PatchApplier.Run(this.ComboBoxLanguages.SelectedItem as Language);
 
                     break;
-                case State.WaitClient:
-                    this.ButtonPlay.Text = StringLoader.GetText("button_cancelling");
-                    this.GameStarter.Cancel();
+            }
+        }
+
+        private void ButtonRemovePatch_Click(object sender, EventArgs e)
+        {
+            switch (this.CurrentState)
+            {
+                case State.Idle:
+                    this.CurrentState = State.RemovePatch;
+                    this.PatchRemover.Run(this.ComboBoxLanguages.SelectedItem as Language);
 
                     break;
             }

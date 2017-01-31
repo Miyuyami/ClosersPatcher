@@ -1,2 +1,15 @@
-Version 1.0.0.0
+Version 1.1.0.0 - NO RELEASE DATE YET
+Changed name of "Force Patch" to "Redownload Translations"
+Fixed some null reference errors when failing to connect to certain web servers instead of showing the proper error
+Fixed error message when the game is not installed and now it shows a proper error message
+Added "Apply Patch" button, it will apply the patch to the Closers folder and will backup the files
+Added "Remove Patch" button, it will restore the backup back to the Closers folder
+Removed "Ready to Play" button, its function is separated into "Apply Patch" and "Remove Patch" buttons
+Added "Download Original Files" button, which will download all files based from the path in "TranslationPackData"
+
+Version 1.0.0.1 - Jan 13, 2017
+Fixed links to not rely on github redirect
+Fixed patcher link to link to closershq forum thread
+
+Version 1.0.0.0 - Jan 12, 2017
 Initial Release!

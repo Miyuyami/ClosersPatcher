@@ -31,9 +31,9 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
 {
-    public partial class MainForm
+    internal partial class MainForm
     {
-        public void RestoreFromTray()
+        internal void RestoreFromTray()
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
@@ -42,62 +42,18 @@ namespace ClosersPatcher.Forms
             this.NotifyIcon.Visible = false;
         }
 
-        private static void StartupBackupCheck(Language language)
+        internal void ResetTranslation(Language language)
         {
-            if (Directory.Exists(Strings.FolderName.Backup))
-            {
-                if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
-                {
-                    DialogResult result = MsgBox.Question(StringLoader.GetText("question_backup_files_found", language.Name));
-
-                    if (result == DialogResult.Yes)
-                    {
-                        RestoreBackup(language);
-                    }
-                    else
-                    {
-                        Directory.Delete(Strings.FolderName.Backup, true);
-                    }
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(Strings.FolderName.Backup);
-            }
+            DeleteTranslationIni(language);
+            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
         }
 
-        private static void RestoreBackup(Language language)
+        private static void DeleteTranslationIni(Language language)
         {
-            if (!Directory.Exists(Strings.FolderName.Backup))
+            string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
+            if (Directory.Exists(Path.GetDirectoryName(iniPath)))
             {
-                return;
-            }
-
-            string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
-
-            foreach (var file in filePaths)
-            {
-                string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
-                Logger.Info($"Restoring file original=[{path}] backup=[{file}]");
-
-                if (File.Exists(path))
-                {
-                    string langPath = Path.Combine(language.Name, path.Substring(UserSettings.GamePath.Length + 1));
-
-                    File.Delete(langPath);
-                    File.Move(path, langPath);
-                }
-
-                try
-                {
-                    File.Move(file, path);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    MsgBox.Error(StringLoader.GetText("exception_cannot_restore_file", Path.GetFullPath(file)));
-                    Logger.Error($"Cannot restore file=[{file}]");
-                    File.Delete(file);
-                }
+                File.Delete(iniPath);
             }
         }
 
@@ -166,15 +122,6 @@ namespace ClosersPatcher.Forms
             }
 
             return langs.ToArray();
-        }
-
-        private static void DeleteTranslationIni(Language language)
-        {
-            string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
-            if (Directory.Exists(Path.GetDirectoryName(iniPath)))
-			{
-                File.Delete(iniPath);
-			}
         }
 
         private static string GetSHA256(string filename)

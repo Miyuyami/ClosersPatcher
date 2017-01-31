@@ -18,64 +18,64 @@
 
 namespace ClosersPatcher.Helpers.GlobalVariables
 {
-    public static class Strings
+    internal static class Strings
     {
-        public static class PasteBin
+        internal static class PasteBin
         {
-            public const string DevKey = "590bc5306a68dcbc1abdc596cf883bcf";
-            public const string Username = "ClosersPatcher";
-            public const string Password = "RiG*$mY3v0kG37&ByI#4UxTLB5!Ppz2K";
+            internal const string DevKey = "590bc5306a68dcbc1abdc596cf883bcf";
+            internal const string Username = "ClosersPatcher";
+            internal const string Password = "RiG*$mY3v0kG37&ByI#4UxTLB5!Ppz2K";
         }
 
-        public static class FileName
+        internal static class FileName
         {
-            public const string CMFScriptPack = "SCRIPT_PACK.CMF";
-            public const string GameExe = "CW.EXE";
-            public const string ClosersExe = "CLOSERS.EXE";
-            public const string LauncherExe = "LAUNCHER.EXE";
-            public const string SecurityExe = "DirectoryRights.exe";
-            public const string Log = ".log";
+            internal const string CMFScriptPack = "SCRIPT_PACK.CMF";
+            internal const string GameExe = "CW.EXE";
+            internal const string ClosersExe = "CLOSERS.EXE";
+            internal const string LauncherExe = "LAUNCHER.EXE";
+            internal const string SecurityExe = "DirectoryRights.exe";
+            internal const string Log = ".log";
         }
 
-        public static class Registry
+        internal static class Registry
         {
-            public const string Key64 = @"SOFTWARE\WOW6432Node\Nexon\Closers";
-            public const string Key32 = @"SOFTWARE\Nexon\Closers";
-            public const string Name = "RootPath";
+            internal const string Key64 = @"SOFTWARE\WOW6432Node\Nexon\Closers";
+            internal const string Key32 = @"SOFTWARE\Nexon\Closers";
+            internal const string Name = "RootPath";
         }
 
-        public static class FolderName
+        internal static class FolderName
         {
-            public const string Data = "DAT";
-            public const string Backup = "backup";
+            internal const string Data = "DAT";
+            internal const string Backup = "backup";
         }
 
-        public static class IniName
+        internal static class IniName
         {
-            public const string ClientVer = "VER.DLL";
-            public const string Translation = "Translation.ini";
-            public const string LanguagePack = "LanguagePacks.ini";
-            public const string TranslationPackData = "TranslationPackData.ini";
+            internal const string ClientVer = "VER.DLL";
+            internal const string Translation = "Translation.ini";
+            internal const string LanguagePack = "LanguagePacks.ini";
+            internal const string TranslationPackData = "TranslationPackData.ini";
 
-            public static class Ver
+            internal static class Ver
             {
-                public const string Section = "Ver";
-                public const string KeyMVer = "MVer";
-                public const string KeyTime = "Time";
+                internal const string Section = "Ver";
+                internal const string KeyMVer = "MVer";
+                internal const string KeyTime = "Time";
             }
 
-            public static class Patcher
+            internal static class Patcher
             {
-                public const string Section = "Patcher";
-                public const string KeyAddress = "address";
+                internal const string Section = "Patcher";
+                internal const string KeyAddress = "address";
             }
 
-            public static class Pack
+            internal static class Pack
             {
-                public const string KeyDate = "date";
-                public const string KeyPath = "path";
-                public const string KeyPathOfDownload = "path_d";
-                public const string KeyBaseValue = "__base__";
+                internal const string KeyDate = "date";
+                internal const string KeyPath = "path";
+                internal const string KeyPathOfDownload = "path_d";
+                internal const string KeyBaseValue = "__base__";
             }
         }
     }

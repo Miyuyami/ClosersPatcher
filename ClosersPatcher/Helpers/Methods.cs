@@ -29,8 +29,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Text;
 
 namespace ClosersPatcher.Helpers
@@ -97,10 +95,13 @@ namespace ClosersPatcher.Helpers
 
         internal static bool IsGameLatestVersion()
         {
+#if DEBUG
+            return true;
+#endif
             IniFile serverIni = GetIniFromUrl(Urls.ClosersSettingsHome + Strings.IniName.ClientVer);
             IniFile clientIni = new IniFile();
             clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-            
+
             string serverMVer = serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
             string clientMVer = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
             if (clientMVer != serverMVer)
@@ -157,6 +158,9 @@ namespace ClosersPatcher.Helpers
 
         internal static bool IsTranslationSupported(Language language)
         {
+#if DEBUG
+            return true;
+#endif
             IniFile clientIni = new IniFile();
             clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
             IniFile supportedIni = GetIniFromUrl(Urls.TranslationHome + language.Name + '/' + Strings.IniName.ClientVer);
@@ -176,6 +180,39 @@ namespace ClosersPatcher.Helpers
             }
 
             return true;
+        }
+
+        internal static void DeleteBackups()
+        {
+            try
+            {
+                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+
+                foreach (var file in filePaths)
+                {
+                    File.Delete(file);
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Directory.CreateDirectory(Strings.FolderName.Backup);
+            }
+        }
+
+        internal static bool BackupExists()
+        {
+            try
+            {
+                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+
+                return filePaths.Length > 0;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Directory.CreateDirectory(Strings.FolderName.Backup);
+            }
+
+            return false;
         }
 
         internal static IniFile GetIniFromUrl(string url)

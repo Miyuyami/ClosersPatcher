@@ -20,7 +20,7 @@ using ClosersPatcher.Downloading;
 using ClosersPatcher.General;
 using ClosersPatcher.Helpers;
 using ClosersPatcher.Helpers.GlobalVariables;
-using ClosersPatcher.Launching;
+using ClosersPatcher.Patching;
 using MadMilkman.Ini;
 using System;
 using System.ComponentModel;
@@ -30,23 +30,22 @@ using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
 {
-    public partial class MainForm : Form
+    internal partial class MainForm : Form
     {
-        public enum State
+        internal enum State
         {
             Idle = 0,
             Download,
-            Prepare,
-            WaitClient,
-            WaitClose
+            ApplyPatch,
+            RemovePatch
         }
 
         private State _state;
         private readonly Downloader Downloader;
-        private readonly GameStarter GameStarter;
+        private readonly PatchApplier PatchApplier;
+        private readonly PatchRemover PatchRemover;
 
-
-        public State CurrentState
+        internal State CurrentState
         {
             get
             {
@@ -62,62 +61,61 @@ namespace ClosersPatcher.Forms
                             this.ComboBoxLanguages.Enabled = true;
                             this.ButtonDownload.Enabled = true;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
-                            this.ButtonPlay.Enabled = true;
-                            this.ButtonPlay.Text = StringLoader.GetText("button_play");
-                            this.ForceStripMenuItem.Enabled = true;
+                            this.ButtonApplyPatch.Enabled = true;
+                            this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
+                            this.ButtonRemovePatch.Enabled = true;
+                            this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
+                            this.OriginalFilesToolStripMenuItem.Enabled = true;
                             this.RefreshToolStripMenuItem.Enabled = true;
                             this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
                             this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
                             this.ToolStripProgressBar.Style = ProgressBarStyle.Blocks;
+
                             break;
                         case State.Download:
                             this.ComboBoxLanguages.Enabled = false;
                             this.ButtonDownload.Enabled = true;
                             this.ButtonDownload.Text = StringLoader.GetText("button_cancel");
-                            this.ButtonPlay.Enabled = false;
-                            this.ButtonPlay.Text = StringLoader.GetText("button_play");
-                            this.ForceStripMenuItem.Enabled = false;
+                            this.ButtonApplyPatch.Enabled = false;
+                            this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
+                            this.ButtonRemovePatch.Enabled = false;
+                            this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
+                            this.OriginalFilesToolStripMenuItem.Enabled = false;
                             this.RefreshToolStripMenuItem.Enabled = false;
                             this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_download");
                             this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
                             this.ToolStripProgressBar.Style = ProgressBarStyle.Blocks;
+
                             break;
-                        case State.Prepare:
+                        case State.ApplyPatch:
                             this.ComboBoxLanguages.Enabled = false;
                             this.ButtonDownload.Enabled = false;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
-                            this.ButtonPlay.Enabled = false;
-                            this.ButtonPlay.Text = StringLoader.GetText("button_play");
-                            this.ForceStripMenuItem.Enabled = false;
+                            this.ButtonApplyPatch.Enabled = true;
+                            this.ButtonApplyPatch.Text = StringLoader.GetText("button_cancel");
+                            this.ButtonRemovePatch.Enabled = false;
+                            this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
+                            this.OriginalFilesToolStripMenuItem.Enabled = false;
                             this.RefreshToolStripMenuItem.Enabled = false;
-                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_prepare");
+                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_apply_patch");
                             this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
                             this.ToolStripProgressBar.Style = ProgressBarStyle.Marquee;
+
                             break;
-                        case State.WaitClient:
+                        case State.RemovePatch:
                             this.ComboBoxLanguages.Enabled = false;
                             this.ButtonDownload.Enabled = false;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
-                            this.ButtonPlay.Enabled = true;
-                            this.ButtonPlay.Text = StringLoader.GetText("button_cancel");
-                            this.ForceStripMenuItem.Enabled = false;
+                            this.ButtonApplyPatch.Enabled = false;
+                            this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
+                            this.ButtonRemovePatch.Enabled = true;
+                            this.ButtonRemovePatch.Text = StringLoader.GetText("button_cancel");
+                            this.OriginalFilesToolStripMenuItem.Enabled = false;
                             this.RefreshToolStripMenuItem.Enabled = false;
-                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_client");
-                            this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
-                            this.ToolStripProgressBar.Style = ProgressBarStyle.Blocks;
-                            break;
-                        case State.WaitClose:
-                            this.ComboBoxLanguages.Enabled = false;
-                            this.ButtonDownload.Enabled = false;
-                            this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
-                            this.ButtonPlay.Enabled = false;
-                            this.ButtonPlay.Text = StringLoader.GetText("button_play");
-                            this.ForceStripMenuItem.Enabled = false;
-                            this.RefreshToolStripMenuItem.Enabled = false;
-                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_close");
+                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_remove_patch");
                             this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
                             this.ToolStripProgressBar.Style = ProgressBarStyle.Marquee;
-                            this.WindowState = FormWindowState.Minimized;
+
                             break;
                     }
 
@@ -127,17 +125,21 @@ namespace ClosersPatcher.Forms
                 }
             }
         }
-        
-        public MainForm()
+
+        internal MainForm()
         {
             this.Downloader = new Downloader();
-            this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(this.Downloader_DownloaderProgressChanged);
-            this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(this.Downloader_DownloaderCompleted);
-            this.GameStarter = new GameStarter();
-            this.GameStarter.GameStarterProgressChanged += this.GameStarter_GameStarterProgressChanged;
-            this.GameStarter.GameStarterCompleted += this.GameStarter_GameStarterCompleted;
-            InitializeComponent();
-            InitializeTextComponent();
+            this.Downloader.DownloaderProgressChanged += this.Downloader_DownloaderProgressChanged;
+            this.Downloader.DownloaderCompleted += this.Downloader_DownloaderCompleted;
+
+            this.PatchApplier = new PatchApplier();
+            this.PatchApplier.PatchApplierCompleted += this.PatchApplier_PatchApplierCompleted;
+
+            this.PatchRemover = new PatchRemover();
+            this.PatchRemover.PatchRemoverCompleted += this.PatchRemover_PatchRemoverCompleted;
+
+            this.InitializeComponent();
+            this.InitializeTextComponent();
             Logger.Info($"[{this.Text}]");// starting in UI Language=[{UserSettings.UILanguageCode}]");
         }
 
@@ -147,11 +149,13 @@ namespace ClosersPatcher.Forms
             this.SettingsToolStripMenuItem.Text = StringLoader.GetText("form_settings");
             this.RefreshToolStripMenuItem.Text = StringLoader.GetText("form_refresh");
             this.AboutToolStripMenuItem.Text = StringLoader.GetText("form_about");
-            this.ForceStripMenuItem.Text = StringLoader.GetText("form_force_patch");
+            this.OriginalFilesToolStripMenuItem.Text = StringLoader.GetText("form_original_files");
             this.OpenClosersWebpageToolStripMenuItem.Text = StringLoader.GetText("form_open_closers_webpage");
             this.UploadLogToPastebinToolStripMenuItem.Text = StringLoader.GetText("form_upload_log");
+            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
-            this.ButtonPlay.Text = StringLoader.GetText("button_play");
+            this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
+            this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
             this.ButtonExit.Text = StringLoader.GetText("button_exit");
             this.NotifyIcon.BalloonTipText = StringLoader.GetText("notify_balloon_text");
             this.NotifyIcon.BalloonTipTitle = StringLoader.GetText("notify_balloon_title");
@@ -184,31 +188,38 @@ namespace ClosersPatcher.Forms
             {
                 Logger.Debug($"{sender.ToString()} successfuly completed");
 
-                IniFile ini = new IniFile(new IniOptions
+                if (e.Language != null)
                 {
-                    KeyDuplicate = IniDuplication.Ignored,
-                    SectionDuplicate = IniDuplication.Ignored
-                });
-                ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-                string clientMVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-                string clientTime = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
+                    IniFile ini = new IniFile(new IniOptions
+                    {
+                        KeyDuplicate = IniDuplication.Ignored,
+                        SectionDuplicate = IniDuplication.Ignored
+                    });
+                    ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
+                    string clientMVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
+                    string clientTime = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
 
-                string iniPath = Path.Combine(e.Language.Name, Strings.IniName.Translation);
-                if (!File.Exists(iniPath))
-                {
-                    File.Create(iniPath).Dispose();
+                    string iniPath = Path.Combine(e.Language.Name, Strings.IniName.Translation);
+                    if (!File.Exists(iniPath))
+                    {
+                        File.Create(iniPath).Dispose();
+                    }
+
+                    ini.Sections.Clear();
+                    ini.Load(iniPath);
+                    ini.Sections.Add(Strings.IniName.Patcher.Section);
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyMVer);
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyMVer].Value = clientMVer;
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyTime);
+                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyTime].Value = clientTime;
+                    ini.Save(iniPath);
                 }
-
-                ini.Sections.Clear();
-                ini.Load(iniPath);
-                ini.Sections.Add(Strings.IniName.Patcher.Section);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyMVer);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyMVer].Value = clientMVer;
-                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyTime);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyTime].Value = clientTime;
-                ini.Save(iniPath);
+                else
+                {
+                    Methods.DeleteBackups();
+                }
 
                 if (UserSettings.HasSound)
                 {
@@ -223,12 +234,7 @@ namespace ClosersPatcher.Forms
             this.CurrentState = State.Idle;
         }
 
-        private void GameStarter_GameStarterProgressChanged(object sender, GameStarterProgressChangedEventArgs e)
-        {
-            this.CurrentState = e.State;
-        }
-
-        private void GameStarter_GameStarterCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void PatchApplier_PatchApplierCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
@@ -242,24 +248,33 @@ namespace ClosersPatcher.Forms
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
                 MsgBox.Notice(StringLoader.GetText("notice_outdated_translation"));
-                ForceStripMenuItem_Click(sender, e);
+                ForceToolStripMenuItem_Click(sender, e);
 
                 return;
             }
+
+            this.CurrentState = State.Idle;
+        }
+
+        private void PatchRemover_PatchRemoverCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled.");
+            }
+            else if (e.Error != null)
+            {
+                Logger.Error(e.Error);
+                MsgBox.Error(e.Error.Message);
+            }
             else
             {
-                Logger.Debug($"{sender.ToString()} successfuly completed");
-                this.RestoreFromTray();
+                Language language = this.ComboBoxLanguages.SelectedItem as Language;
+
+                this.ResetTranslation(language);
             }
 
-            try
-            {
-                RestoreBackup(this.ComboBoxLanguages.SelectedItem as Language);
-            }
-            finally
-            {
-                this.CurrentState = State.Idle;
-            }
+            this.CurrentState = State.Idle;
         }
     }
 }

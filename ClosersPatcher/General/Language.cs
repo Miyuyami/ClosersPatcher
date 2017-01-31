@@ -20,17 +20,17 @@ using System;
 
 namespace ClosersPatcher.General
 {
-    public class Language
+    internal class Language
     {
-        public string Name { get; private set; }
-        public DateTime LastUpdate { get; private set; }
+        internal string Name { get; private set; }
+        internal DateTime LastUpdate { get; private set; }
 
-        public Language(string name)
+        internal Language(string name)
         {
             this.Name = name;
         }
 
-        public Language(string name, DateTime lastUpdate)
+        internal Language(string name, DateTime lastUpdate)
         {
             this.Name = name;
             this.LastUpdate = lastUpdate;

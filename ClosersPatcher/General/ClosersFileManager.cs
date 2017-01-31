@@ -25,12 +25,12 @@ using System.Net;
 
 namespace ClosersPatcher.General
 {
-    static class ClosersFileManager
+    internal static class ClosersFileManager
     {
         private static List<ClosersFile> ClosersFiles;
-        public static int Count => ClosersFiles.Count;
-        public static ClosersFile GetElementAt(int index) => ClosersFiles[index];
-        public static ReadOnlyCollection<ClosersFile> GetFiles() => ClosersFiles.AsReadOnly();
+        internal static int Count => ClosersFiles.Count;
+        internal static ClosersFile GetElementAt(int index) => ClosersFiles[index];
+        internal static ReadOnlyCollection<ClosersFile> GetFiles() => ClosersFiles.AsReadOnly();
 
         internal static void LoadFileConfiguration()
         {

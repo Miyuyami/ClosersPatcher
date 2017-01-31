@@ -129,6 +129,9 @@
   <data name="button_apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="button_apply_patch" xml:space="preserve">
+    <value>Apply Patch</value>
+  </data>
   <data name="button_cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -150,6 +153,9 @@
   <data name="button_play" xml:space="preserve">
     <value>Ready To Play!</value>
   </data>
+  <data name="button_remove_patch" xml:space="preserve">
+    <value>Remove Patch</value>
+  </data>
   <data name="dialog_folder_change_game_dir" xml:space="preserve">
     <value>Select your Closers game client folder.</value>
   </data>
@@ -158,6 +164,10 @@
   </data>
   <data name="exception_already_latest_translation" xml:space="preserve">
     <value>You already have the latest ({0} JST) translation files for this language!</value>
+  </data>
+  <data name="exception_backup_version_not_supported" xml:space="preserve">
+    <value>There is no backup available for your client version.
+Try again later when the backup is updated.</value>
   </data>
   <data name="exception_cannot_close" xml:space="preserve">
     <value>{0} is currently busy and cannot close.</value>
@@ -174,6 +184,9 @@
   <data name="exception_game_already_open" xml:space="preserve">
     <value>Cannot proceed because {0} is already running.</value>
   </data>
+  <data name="exception_game_install_not_found" xml:space="preserve">
+    <value>Closers installation not found.</value>
+  </data>
   <data name="exception_log_file_failed" xml:space="preserve">
     <value>Failed to upload log file.</value>
   </data>
@@ -184,11 +197,17 @@
     <value>Your client is not updated to the latest version.
 Update your client and try again.</value>
   </data>
+  <data name="exception_no_backup" xml:space="preserve">
+    <value>There is no backup to restore.</value>
+  </data>
   <data name="exception_read_translation_ini" xml:space="preserve">
     <value>Error reading translation version. Try to do Menu -&gt; Force Patch.</value>
   </data>
   <data name="exception_server_refused_connection" xml:space="preserve">
     <value>Server has refused the connection. (server maintenance?)</value>
+  </data>
+  <data name="exception_translation_already_applied" xml:space="preserve">
+    <value>A translation is already applied.</value>
   </data>
   <data name="exception_version_not_supported" xml:space="preserve">
     <value>There is no translation available for your client version.
@@ -198,7 +217,7 @@ Try again later when the translation is updated.</value>
     <value>About</value>
   </data>
   <data name="form_force_patch" xml:space="preserve">
-    <value>Force Patch</value>
+    <value>Force Download Translations</value>
   </data>
   <data name="form_label_new_translation" xml:space="preserve">
     <value>New translations for {0} - ({1})</value>
@@ -209,11 +228,17 @@ Try again later when the translation is updated.</value>
   <data name="form_open_closers_webpage" xml:space="preserve">
     <value>Open Closers Webpage</value>
   </data>
+  <data name="form_original_files" xml:space="preserve">
+    <value>Download Original Files</value>
+  </data>
   <data name="form_refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
   <data name="form_settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="form_status_apply_patch" xml:space="preserve">
+    <value>Applying Patch...</value>
   </data>
   <data name="form_status_download" xml:space="preserve">
     <value>Downloading...</value>
@@ -223,6 +248,9 @@ Try again later when the translation is updated.</value>
   </data>
   <data name="form_status_prepare" xml:space="preserve">
     <value>Preparing...</value>
+  </data>
+  <data name="form_status_remove_patch" xml:space="preserve">
+    <value>Removing Patch...</value>
   </data>
   <data name="form_status_wait_client" xml:space="preserve">
     <value>Waiting for client...</value>

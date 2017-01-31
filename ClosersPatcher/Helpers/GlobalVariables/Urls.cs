@@ -18,11 +18,15 @@
 
 namespace ClosersPatcher.Helpers.GlobalVariables
 {
-    public static class Urls
+    internal static class Urls
     {
-        public const string ClosersWebsite = "http://closershq.com/Discussion-Unofficial-Closers-English-Translation-Project";
-        public const string ClosersHome = "https://clogin.nexon.com/common/clogin.aspx?redirect=http%3a%2f%2fclosers.nexon.com%2f";
-        public const string TranslationHome = "https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/Translations/";
-        public const string ClosersSettingsHome = "http://closers.dn.nexoncdn.co.kr/CLOSERS_LIVE_NEXON/";
+        internal const string ClosersWebsite = "http://closershq.com/Discussion-Unofficial-Closers-English-Translation-Project";
+        internal const string ClosersHome = "https://clogin.nexon.com/common/clogin.aspx?redirect=http%3a%2f%2fclosers.nexon.com%2f";
+#if DEBUG
+        internal static string TranslationHome = System.Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\GitHub\ClosersPatcher\Translations\");
+#else
+        internal const string TranslationHome = "https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/Translations/";
+#endif
+        internal const string ClosersSettingsHome = "http://closers.dn.nexoncdn.co.kr/CLOSERS_LIVE_NEXON/";
     }
 }

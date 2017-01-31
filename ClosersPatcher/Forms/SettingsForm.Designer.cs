@@ -18,7 +18,7 @@
 
 namespace ClosersPatcher.Forms
 {
-    partial class SettingsForm
+    internal partial class SettingsForm
     {
         /// <summary>
         /// Required designer variable.

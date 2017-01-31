@@ -27,16 +27,16 @@ using System.Threading;
 
 namespace ClosersPatcher.Downloading
 {
-    public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
-    public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
+    internal delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
+    internal delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
 
-    public class Downloader
+    internal class Downloader
     {
         private BackgroundWorker Worker;
         private WebClient Client;
         private Language Language;
 
-        public Downloader()
+        internal Downloader()
         {
             this.Worker = new BackgroundWorker
             {
@@ -49,29 +49,46 @@ namespace ClosersPatcher.Downloading
             this.Client.DownloadDataCompleted += this.Client_DownloadDataCompleted;
         }
 
-        public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
-        public event DownloaderCompletedEventHandler DownloaderCompleted;
+        internal event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
+        internal event DownloaderCompletedEventHandler DownloaderCompleted;
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("Downloader", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+            Logger.Debug(Methods.MethodFullName("Downloader", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language != null ? this.Language.ToString() : "null"));
 
             if (Methods.IsGameLatestVersion())
             {
-                if (Methods.IsTranslationSupported(this.Language))
+                if (this.Language != null)
                 {
-                    if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
+                    if (Methods.IsTranslationSupported(this.Language))
+                    {
+                        if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
+                        {
+                            Methods.DeleteBackups();
+                            ClosersFileManager.LoadFileConfiguration();
+                        }
+                        else
+                        {
+                            throw new Exception(StringLoader.GetText("exception_already_latest_translation", Methods.DateToString(this.Language.LastUpdate)));
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(StringLoader.GetText("exception_version_not_supported"));
+                    }
+                }
+                else
+                {
+                    Logger.Info("Downloading backup");
+
+                    if (Methods.IsTranslationSupported(new Language(Strings.FolderName.Backup)))
                     {
                         ClosersFileManager.LoadFileConfiguration();
                     }
                     else
                     {
-                        throw new Exception(StringLoader.GetText("exception_already_latest_translation", Methods.DateToString(this.Language.LastUpdate)));
+                        throw new Exception(StringLoader.GetText("exception_backup_version_not_supported"));
                     }
-                }
-                else
-                {
-                    throw new Exception(StringLoader.GetText("exception_version_not_supported"));
                 }
             }
             else
@@ -108,8 +125,17 @@ namespace ClosersPatcher.Downloading
                 var index = (int)e.UserState;
                 ClosersFile swFile = ClosersFileManager.GetElementAt(index);
 
-                string swFilePath = Path.Combine(this.Language.Name, swFile.Path, Path.GetFileName(swFile.PathD));
-                string swFileDirectory = Path.GetDirectoryName(swFilePath);
+                string swFilePath;
+
+                if (this.Language != null)
+                {
+                    swFilePath = Path.Combine(this.Language.Name, swFile.Path, Path.GetFileName(swFile.PathD));
+                }
+                else
+                {
+                    swFilePath = Path.Combine(UserSettings.GamePath, swFile.Path, Path.GetFileName(swFile.PathD));
+                }
+                string swFileDirectory = swFileDirectory = Path.GetDirectoryName(swFilePath);
 
                 Directory.CreateDirectory(swFileDirectory);
                 File.WriteAllBytes(swFilePath, e.Result);
@@ -127,20 +153,29 @@ namespace ClosersPatcher.Downloading
 
         private void DownloadNext(int index)
         {
-            Uri uri = new Uri(Urls.TranslationHome + this.Language.Name + '/' + ClosersFileManager.GetElementAt(index).PathD);
+            Uri uri;
+
+            if (this.Language != null)
+            {
+                uri = new Uri(Urls.TranslationHome + this.Language.Name + '/' + ClosersFileManager.GetElementAt(index).PathD);
+            }
+            else
+            {
+                uri = new Uri(Urls.TranslationHome + Strings.FolderName.Backup + '/' + ClosersFileManager.GetElementAt(index).PathD);
+            }
 
             this.Client.DownloadDataAsync(uri, index);
 
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri));
         }
 
-        public void Cancel()
+        internal void Cancel()
         {
             this.Worker.CancelAsync();
             this.Client.CancelAsync();
         }
 
-        public void Run(Language language)
+        internal void Run(Language language)
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
             {

@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of Closers Patcher.
- * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
+ * Copyright (C) 2017 Miyu
  * 
  * Closers Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,101 +23,77 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using static ClosersPatcher.Forms.MainForm;
 
-namespace ClosersPatcher.Launching
+namespace ClosersPatcher.Patching
 {
-    public delegate void GameStarterProgressChangedEventHandler(object sender, GameStarterProgressChangedEventArgs e);
-    public delegate void GameStarterCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
-    
-    class GameStarter
+    internal delegate void PatchApplierCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
+
+    internal class PatchApplier
     {
         private readonly BackgroundWorker Worker;
         private Language Language;
 
-        public GameStarter()
+        internal PatchApplier()
         {
             this.Worker = new BackgroundWorker
             {
-                WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
             this.Worker.DoWork += this.Worker_DoWork;
-            this.Worker.ProgressChanged += this.Worker_ProgressChanged;
             this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
         }
 
-        public event GameStarterProgressChangedEventHandler GameStarterProgressChanged;
-        public event GameStarterCompletedEventHandler GameStarterCompleted;
+        internal event PatchApplierCompletedEventHandler PatchApplierCompleted;
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            this.Worker.ReportProgress((int)State.Prepare);
-            Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+            Logger.Debug(Methods.MethodFullName("PatchApplier", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+
+            Methods.CheckRunningPrograms();
 
             if (!Methods.IsGameLatestVersion())
             {
                 throw new Exception(StringLoader.GetText("exception_not_latest_client"));
             }
 
-            Methods.CheckRunningPrograms();
-
             ClosersFileManager.LoadFileConfiguration();
 
-            if (IsTranslationOutdatedOrMissing(this.Language))
+            if (Methods.IsTranslationOutdated(this.Language))
             {
-                e.Result = true; // call force patch in completed event
+                e.Result = true; // call force patch in completed Event
                 return;
             }
 
-            Process clientProcess = null;
-
-            BackupAndPlaceFiles(this.Language);
-
-            this.Worker.ReportProgress((int)State.WaitClient);
-            while (true)
+            if (Methods.BackupExists())
             {
-                if (this.Worker.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                if ((clientProcess = GetProcess(Strings.FileName.GameExe)) == null)
-                {
-                    Thread.Sleep(1000);
-                }
-                else
-                {
-                    break;
-                }
+                throw new Exception(StringLoader.GetText("exception_translation_already_applied"));
             }
 
-            this.Worker.ReportProgress((int)State.WaitClose);
-            clientProcess.WaitForExit();
-        }
+            if (IsTranslationMissing(this.Language))
+            {
+                e.Result = true; // call force patch in completed Event
+                return;
+            }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            this.GameStarterProgressChanged?.Invoke(sender, new GameStarterProgressChangedEventArgs((State)e.ProgressPercentage));
+            if (this.Worker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            BackupAndPlaceFiles(this.Language);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.GameStarterCompleted?.Invoke(sender, e);
+            this.PatchApplierCompleted?.Invoke(sender, e);
         }
 
-        private static bool IsTranslationOutdatedOrMissing(Language language)
+        private static bool IsTranslationMissing(Language language)
         {
-            if (Methods.IsTranslationOutdated(language))
-            {
-                return true;
-            }
-
             ReadOnlyCollection<ClosersFile> gameFiles = ClosersFileManager.GetFiles();
             ILookup<Type, ClosersFile> gameFileTypeLookup = gameFiles.ToLookup(f => f.GetType());
             IEnumerable<string> otherGameFiles = gameFileTypeLookup[typeof(ClosersFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
@@ -161,24 +137,12 @@ namespace ClosersPatcher.Launching
             File.Move(translationFilePath, originalFilePath);
         }
 
-        private static Process GetProcess(string name)
-        {
-            Process[] processesByName = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(name));
-
-            if (processesByName.Length > 0)
-            {
-                return processesByName[0];
-            }
-
-            return null;
-        }
-
-        public void Cancel()
+        internal void Cancel()
         {
             this.Worker.CancelAsync();
         }
 
-        public void Run(Language language)
+        internal void Run(Language language)
         {
             if (this.Worker.IsBusy)
             {
