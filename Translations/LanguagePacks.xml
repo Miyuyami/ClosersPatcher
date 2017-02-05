@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <closersPatcher>
-  <servers>
+  <regions>
     <kr name="Korea">
       <languages>
         <en name="English">
-          <value>3/Feb/2017 09:11 PM</value>
+          <value>3/Feb/2017 9:11 PM</value>
         </en>
       </languages>
     </kr>
-  </servers>
+  </regions>
 </closersPatcher>
