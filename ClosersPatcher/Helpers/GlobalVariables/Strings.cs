@@ -39,22 +39,26 @@ namespace ClosersPatcher.Helpers.GlobalVariables
 
         internal static class Registry
         {
-            internal const string Key64 = @"SOFTWARE\WOW6432Node\Nexon\Closers";
-            internal const string Key32 = @"SOFTWARE\Nexon\Closers";
-            internal const string Name = "RootPath";
+            internal class KR
+            {
+                internal static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
+                internal const string Key32Path = @"SOFTWARE\Nexon\Closers";
+                internal const string Key64Path = @"SOFTWARE\WOW6432Node\Nexon\Closers";
+                internal const string FolderPath = "RootPath";
+            }
         }
 
         internal static class FolderName
         {
             internal const string Data = "DAT";
-            internal const string Backup = "backup";
+            internal const string Backup = "backup"; // TODO: each region with it's own backup
         }
 
         internal static class IniName
         {
             internal const string ClientVer = "VER.DLL";
             internal const string Translation = "Translation.ini";
-            internal const string LanguagePack = "LanguagePacks.ini";
+            internal const string LanguagePack = "LanguagePacks.xml";
             internal const string TranslationPackData = "TranslationPackData.ini";
 
             internal static class Ver
@@ -67,16 +71,26 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             internal static class Patcher
             {
                 internal const string Section = "Patcher";
-                internal const string KeyAddress = "address";
+                internal const string KeyRegion = "region";
+                internal const string KeyDate = "date";
             }
 
             internal static class Pack
             {
-                internal const string KeyDate = "date";
                 internal const string KeyPath = "path";
                 internal const string KeyPathOfDownload = "path_d";
                 internal const string KeyBaseValue = "__base__";
             }
+        }
+
+        internal static class Xml
+        {
+            internal const string Name = "name";
+            internal const string Value = "value";
+            internal const string Regions = "regions";
+            internal const string Languages = "languages";
+            internal const string Supports = "supports";
+            internal const string Format = "format";
         }
     }
 }

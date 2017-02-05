@@ -21,7 +21,8 @@ namespace ClosersPatcher.Helpers.GlobalVariables
     internal static class Urls
     {
         internal const string ClosersWebsite = "http://closershq.com/Discussion-Unofficial-Closers-English-Translation-Project";
-        internal const string ClosersHome = "https://clogin.nexon.com/common/clogin.aspx?redirect=http%3a%2f%2fclosers.nexon.com%2f";
+        internal const string ClosersKRHome = "https://clogin.nexon.com/common/clogin.aspx?redirect=http%3a%2f%2fclosers.nexon.com%2f";
+        internal const string ClosersJPHome = "http://cls.happytuk.co.jp/cls/index";
 #if DEBUG
         internal static string TranslationHome = System.Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\GitHub\ClosersPatcher\Translations\");
 #else

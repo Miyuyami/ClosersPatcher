@@ -50,7 +50,7 @@ namespace ClosersPatcher.Patching
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("PatchApplier", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+            Logger.Debug(Methods.MethodFullName("PatchApplier", Thread.CurrentThread.ManagedThreadId, this.Language));
 
             Methods.CheckRunningPrograms();
 
@@ -59,7 +59,7 @@ namespace ClosersPatcher.Patching
                 throw new Exception(StringLoader.GetText("exception_not_latest_client"));
             }
 
-            ClosersFileManager.LoadFileConfiguration();
+            ClosersFileManager.LoadFileConfiguration(this.Language);
 
             if (Methods.IsTranslationOutdated(this.Language))
             {
@@ -67,7 +67,7 @@ namespace ClosersPatcher.Patching
                 return;
             }
 
-            if (Methods.BackupExists())
+            if (Methods.BackupExists(this.Language))
             {
                 throw new Exception(StringLoader.GetText("exception_translation_already_applied"));
             }
@@ -97,7 +97,7 @@ namespace ClosersPatcher.Patching
             ReadOnlyCollection<ClosersFile> gameFiles = ClosersFileManager.GetFiles();
             ILookup<Type, ClosersFile> gameFileTypeLookup = gameFiles.ToLookup(f => f.GetType());
             IEnumerable<string> otherGameFiles = gameFileTypeLookup[typeof(ClosersFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
-            IEnumerable<string> translationFiles = otherGameFiles.Select(f => Path.Combine(language.Name, f));
+            IEnumerable<string> translationFiles = otherGameFiles.Select(f => Path.Combine(language.Path, f));
 
             foreach (var path in translationFiles)
             {
@@ -120,8 +120,8 @@ namespace ClosersPatcher.Patching
             foreach (var path in translationFiles)
             {
                 string originalFilePath = Path.Combine(UserSettings.GamePath, path);
-                string translationFilePath = Path.Combine(language.Name, path);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, path);
+                string translationFilePath = Path.Combine(language.Path, path);
+                string backupFilePath = Path.Combine(language.BackupPath, path);
 
                 BackupAndPlaceFile(originalFilePath, translationFilePath, backupFilePath);
             }
@@ -134,7 +134,7 @@ namespace ClosersPatcher.Patching
 
             Logger.Info($"Swapping file original=[{originalFilePath}] backup=[{backupFilePath}] translation=[{translationFilePath}]");
             File.Move(originalFilePath, backupFilePath);
-            File.Move(translationFilePath, originalFilePath);
+            File.Copy(translationFilePath, originalFilePath);
         }
 
         internal void Cancel()

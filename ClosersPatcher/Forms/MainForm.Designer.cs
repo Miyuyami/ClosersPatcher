@@ -15,9 +15,9 @@
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
             
@@ -38,10 +38,14 @@
             this.ButtonRemovePatch = new System.Windows.Forms.Button();
             this.TableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ButtonDownload = new System.Windows.Forms.Button();
-            this.ComboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.PictureBox = new System.Windows.Forms.PictureBox();
             this.ButtonExit = new System.Windows.Forms.Button();
             this.LabelNewTranslations = new System.Windows.Forms.Label();
+            this.ComboBoxLanguages = new System.Windows.Forms.ComboBox();
+            this.LabelLanguagePick = new System.Windows.Forms.Label();
+            this.LabelRegionPick = new System.Windows.Forms.Label();
+            this.ComboBoxRegions = new System.Windows.Forms.ComboBox();
+            this.LabelNotifier = new System.Windows.Forms.Label();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.MenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OriginalFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +75,7 @@
             this.ToolStripProgressBar,
             this.ToolStripSeparator,
             this.ToolStripStatusLabel});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 361);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 324);
             this.StatusStrip.Name = "StatusStrip";
             this.StatusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.StatusStrip.Size = new System.Drawing.Size(364, 22);
@@ -103,21 +107,21 @@
             // 
             // ButtonApplyPatch
             // 
-            this.ButtonApplyPatch.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ButtonApplyPatch.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.TableLayout.SetColumnSpan(this.ButtonApplyPatch, 2);
             this.ButtonApplyPatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonApplyPatch.Location = new System.Drawing.Point(117, 206);
+            this.ButtonApplyPatch.Location = new System.Drawing.Point(58, 205);
             this.ButtonApplyPatch.Name = "ButtonApplyPatch";
-            this.ButtonApplyPatch.Size = new System.Drawing.Size(130, 26);
+            this.ButtonApplyPatch.Size = new System.Drawing.Size(120, 26);
             this.ButtonApplyPatch.TabIndex = 3;
             this.ButtonApplyPatch.UseVisualStyleBackColor = true;
             this.ButtonApplyPatch.Click += new System.EventHandler(this.ButtonApplyPatch_Click);
             // 
             // ButtonRemovePatch
             // 
-            this.ButtonRemovePatch.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ButtonRemovePatch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.TableLayout.SetColumnSpan(this.ButtonRemovePatch, 2);
-            this.ButtonRemovePatch.Location = new System.Drawing.Point(122, 247);
+            this.ButtonRemovePatch.Location = new System.Drawing.Point(184, 205);
             this.ButtonRemovePatch.Name = "ButtonRemovePatch";
             this.ButtonRemovePatch.Size = new System.Drawing.Size(120, 26);
             this.ButtonRemovePatch.TabIndex = 4;
@@ -128,58 +132,52 @@
             // 
             this.TableLayout.BackgroundImage = global::ClosersPatcher.Properties.Resources.fadegray;
             this.TableLayout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.TableLayout.ColumnCount = 2;
-            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.TableLayout.ColumnCount = 4;
+            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
+            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.TableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
             this.TableLayout.Controls.Add(this.ButtonApplyPatch, 0, 4);
-            this.TableLayout.Controls.Add(this.ButtonRemovePatch, 0, 5);
+            this.TableLayout.Controls.Add(this.ButtonRemovePatch, 2, 4);
             this.TableLayout.Controls.Add(this.ButtonDownload, 0, 3);
-            this.TableLayout.Controls.Add(this.ComboBoxLanguages, 0, 1);
             this.TableLayout.Controls.Add(this.PictureBox, 0, 0);
             this.TableLayout.Controls.Add(this.ButtonExit, 0, 6);
             this.TableLayout.Controls.Add(this.LabelNewTranslations, 0, 2);
+            this.TableLayout.Controls.Add(this.ComboBoxLanguages, 3, 1);
+            this.TableLayout.Controls.Add(this.LabelLanguagePick, 2, 1);
+            this.TableLayout.Controls.Add(this.LabelRegionPick, 0, 1);
+            this.TableLayout.Controls.Add(this.ComboBoxRegions, 1, 1);
+            this.TableLayout.Controls.Add(this.LabelNotifier, 0, 5);
             this.TableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TableLayout.Location = new System.Drawing.Point(0, 24);
             this.TableLayout.Name = "TableLayout";
             this.TableLayout.Padding = new System.Windows.Forms.Padding(4);
             this.TableLayout.RowCount = 7;
             this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12F));
-            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
-            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16F));
+            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14F));
+            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22F));
+            this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.TableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24F));
-            this.TableLayout.Size = new System.Drawing.Size(364, 337);
+            this.TableLayout.Size = new System.Drawing.Size(364, 300);
             this.TableLayout.TabIndex = 1;
             // 
             // ButtonDownload
             // 
             this.ButtonDownload.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.TableLayout.SetColumnSpan(this.ButtonDownload, 2);
-            this.ButtonDownload.Location = new System.Drawing.Point(112, 170);
+            this.TableLayout.SetColumnSpan(this.ButtonDownload, 4);
+            this.ButtonDownload.Location = new System.Drawing.Point(112, 171);
             this.ButtonDownload.Name = "ButtonDownload";
             this.ButtonDownload.Size = new System.Drawing.Size(140, 24);
             this.ButtonDownload.TabIndex = 2;
             this.ButtonDownload.UseVisualStyleBackColor = true;
             this.ButtonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
             // 
-            // ComboBoxLanguages
-            // 
-            this.ComboBoxLanguages.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.TableLayout.SetColumnSpan(this.ComboBoxLanguages, 2);
-            this.ComboBoxLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxLanguages.FormattingEnabled = true;
-            this.ComboBoxLanguages.Location = new System.Drawing.Point(112, 129);
-            this.ComboBoxLanguages.Name = "ComboBoxLanguages";
-            this.ComboBoxLanguages.Size = new System.Drawing.Size(140, 21);
-            this.ComboBoxLanguages.TabIndex = 0;
-            this.ComboBoxLanguages.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLanguages_SelectedIndexChanged);
-            // 
             // PictureBox
             // 
             this.PictureBox.BackgroundImage = global::ClosersPatcher.Properties.Resources.fadegray;
-            this.TableLayout.SetColumnSpan(this.PictureBox, 2);
+            this.TableLayout.SetColumnSpan(this.PictureBox, 4);
             this.PictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PictureBox.Image = global::ClosersPatcher.Properties.Resources.logo;
             this.PictureBox.Location = new System.Drawing.Point(7, 7);
@@ -192,8 +190,8 @@
             // ButtonExit
             // 
             this.ButtonExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.TableLayout.SetColumnSpan(this.ButtonExit, 2);
-            this.ButtonExit.Location = new System.Drawing.Point(132, 302);
+            this.TableLayout.SetColumnSpan(this.ButtonExit, 4);
+            this.ButtonExit.Location = new System.Drawing.Point(132, 265);
             this.ButtonExit.Name = "ButtonExit";
             this.ButtonExit.Size = new System.Drawing.Size(100, 28);
             this.ButtonExit.TabIndex = 5;
@@ -205,12 +203,68 @@
             this.LabelNewTranslations.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.LabelNewTranslations.AutoSize = true;
             this.LabelNewTranslations.BackColor = System.Drawing.Color.Transparent;
-            this.TableLayout.SetColumnSpan(this.LabelNewTranslations, 2);
+            this.TableLayout.SetColumnSpan(this.LabelNewTranslations, 4);
             this.LabelNewTranslations.ForeColor = System.Drawing.Color.Red;
             this.LabelNewTranslations.Location = new System.Drawing.Point(182, 151);
             this.LabelNewTranslations.Name = "LabelNewTranslations";
             this.LabelNewTranslations.Size = new System.Drawing.Size(0, 13);
             this.LabelNewTranslations.TabIndex = 1;
+            // 
+            // ComboBoxLanguages
+            // 
+            this.ComboBoxLanguages.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ComboBoxLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxLanguages.FormattingEnabled = true;
+            this.ComboBoxLanguages.Location = new System.Drawing.Point(248, 129);
+            this.ComboBoxLanguages.Name = "ComboBoxLanguages";
+            this.ComboBoxLanguages.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxLanguages.TabIndex = 0;
+            this.ComboBoxLanguages.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxLanguages_SelectionChangeCommitted);
+            // 
+            // LabelLanguagePick
+            // 
+            this.LabelLanguagePick.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.LabelLanguagePick.AutoSize = true;
+            this.LabelLanguagePick.BackColor = System.Drawing.Color.Transparent;
+            this.LabelLanguagePick.Location = new System.Drawing.Point(242, 131);
+            this.LabelLanguagePick.Name = "LabelLanguagePick";
+            this.LabelLanguagePick.Size = new System.Drawing.Size(0, 13);
+            this.LabelLanguagePick.TabIndex = 8;
+            this.LabelLanguagePick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // LabelRegionPick
+            // 
+            this.LabelRegionPick.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.LabelRegionPick.AutoSize = true;
+            this.LabelRegionPick.BackColor = System.Drawing.Color.Transparent;
+            this.LabelRegionPick.Location = new System.Drawing.Point(65, 131);
+            this.LabelRegionPick.Name = "LabelRegionPick";
+            this.LabelRegionPick.Size = new System.Drawing.Size(0, 13);
+            this.LabelRegionPick.TabIndex = 9;
+            this.LabelRegionPick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // ComboBoxRegions
+            // 
+            this.ComboBoxRegions.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ComboBoxRegions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxRegions.FormattingEnabled = true;
+            this.ComboBoxRegions.Location = new System.Drawing.Point(71, 129);
+            this.ComboBoxRegions.Name = "ComboBoxRegions";
+            this.ComboBoxRegions.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxRegions.TabIndex = 10;
+            this.ComboBoxRegions.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxRegions_SelectionChangeCommitted);
+            // 
+            // LabelNotifier
+            // 
+            this.LabelNotifier.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelNotifier.AutoSize = true;
+            this.LabelNotifier.BackColor = System.Drawing.Color.Transparent;
+            this.TableLayout.SetColumnSpan(this.LabelNotifier, 4);
+            this.LabelNotifier.ForeColor = System.Drawing.Color.Green;
+            this.LabelNotifier.Location = new System.Drawing.Point(182, 239);
+            this.LabelNotifier.Name = "LabelNotifier";
+            this.LabelNotifier.Size = new System.Drawing.Size(0, 13);
+            this.LabelNotifier.TabIndex = 11;
             // 
             // MenuStrip
             // 
@@ -238,19 +292,19 @@
             // OriginalFilesToolStripMenuItem
             // 
             this.OriginalFilesToolStripMenuItem.Name = "OriginalFilesToolStripMenuItem";
-            this.OriginalFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.OriginalFilesToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             this.OriginalFilesToolStripMenuItem.Click += new System.EventHandler(this.OriginalFilesToolStripMenuItem_Click);
             // 
             // OpenClosersWebpageToolStripMenuItem
             // 
             this.OpenClosersWebpageToolStripMenuItem.Name = "OpenClosersWebpageToolStripMenuItem";
-            this.OpenClosersWebpageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.OpenClosersWebpageToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             this.OpenClosersWebpageToolStripMenuItem.Click += new System.EventHandler(this.OpenClosersWebpageToolStripMenuItem_Click);
             // 
             // UploadLogToPastebinToolStripMenuItem
             // 
             this.UploadLogToPastebinToolStripMenuItem.Name = "UploadLogToPastebinToolStripMenuItem";
-            this.UploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.UploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             this.UploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.UploadLogToPastebinToolStripMenuItem_Click);
             // 
             // SettingsToolStripMenuItem
@@ -284,7 +338,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(364, 383);
+            this.ClientSize = new System.Drawing.Size(364, 346);
             this.Controls.Add(this.TableLayout);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.MenuStrip);
@@ -313,7 +367,7 @@
         private System.Windows.Forms.Button ButtonApplyPatch;
         private System.Windows.Forms.Button ButtonRemovePatch;
         private System.Windows.Forms.Button ButtonDownload;
-        internal System.Windows.Forms.ComboBox ComboBoxLanguages;
+        private System.Windows.Forms.ComboBox ComboBoxLanguages;
         private System.Windows.Forms.NotifyIcon NotifyIcon;
         private System.Windows.Forms.MenuStrip MenuStrip;
         private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
@@ -331,6 +385,10 @@
         private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UploadLogToPastebinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SpeakerToolStripMenuItem;
+        private System.Windows.Forms.Label LabelLanguagePick;
+        private System.Windows.Forms.Label LabelRegionPick;
+        private System.Windows.Forms.ComboBox ComboBoxRegions;
+        private System.Windows.Forms.Label LabelNotifier;
     }
 }
 

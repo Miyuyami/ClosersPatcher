@@ -32,22 +32,22 @@ namespace ClosersPatcher.General
         internal static ClosersFile GetElementAt(int index) => ClosersFiles[index];
         internal static ReadOnlyCollection<ClosersFile> GetFiles() => ClosersFiles.AsReadOnly();
 
-        internal static void LoadFileConfiguration()
+        internal static void LoadFileConfiguration(Language language)
         {
             if (ClosersFiles == null)
             {
-                InternalLoadFileConfiguration();
+                InternalLoadFileConfiguration(Urls.TranslationHome + language.Path + '/' + Strings.IniName.TranslationPackData);
             }
         }
 
-        private static void InternalLoadFileConfiguration()
+        private static void InternalLoadFileConfiguration(string url)
         {
             ClosersFiles = new List<ClosersFile>();
 
             byte[] packData;
             using (var client = new WebClient())
             {
-                packData = client.DownloadData(Urls.TranslationHome + Strings.IniName.TranslationPackData);
+                packData = client.DownloadData(url);
             }
 
             IniFile ini = new IniFile();

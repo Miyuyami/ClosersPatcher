@@ -23,10 +23,10 @@ namespace ClosersPatcher.Downloading
 {
     internal class DownloaderProgressChangedEventArgs : EventArgs
     {
-        internal int FileNumber { get; private set; }
-        internal int FileCount { get; private set; }
-        internal string FileName { get; private set; }
-        internal int Progress { get; private set; }
+        internal int FileNumber { get; }
+        internal int FileCount { get; }
+        internal string FileName { get; }
+        internal int Progress { get; }
 
         internal DownloaderProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, DownloadProgressChangedEventArgs e)
         {

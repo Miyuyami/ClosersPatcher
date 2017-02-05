@@ -30,7 +30,7 @@ namespace ClosersPatcher.Forms
     internal partial class SettingsForm : Form
     {
         private bool PendingRestart;
-        private string GameClientDirectory;
+        //private string GameClientDirectory;
         private string PatcherWorkingDirectory;
         private string UILanguage;
 
@@ -43,56 +43,57 @@ namespace ClosersPatcher.Forms
         private void InitializeTextComponent()
         {
             this.Text = StringLoader.GetText("form_settings");
-            this.buttonOk.Text = StringLoader.GetText("button_ok");
-            this.buttonCancel.Text = StringLoader.GetText("button_cancel");
-            this.buttonApply.Text = StringLoader.GetText("button_apply");
-            this.tabPageGame.Text = StringLoader.GetText("tab_game");
-            this.groupBoxGameDirectory.Text = StringLoader.GetText("box_game_dir");
-            this.buttonGameChangeDirectory.Text = this.buttonPatcherChangeDirectory.Text = StringLoader.GetText("button_change");
-            this.tabPagePatcher.Text = StringLoader.GetText("tab_patcher");
-            this.groupBoxPatcherDirectory.Text = StringLoader.GetText("box_patcher_dir");
-            this.groupBoxUILanguagePicker.Text = StringLoader.GetText("box_language");
+            this.ButtonOk.Text = StringLoader.GetText("button_ok");
+            this.ButtonCancel.Text = StringLoader.GetText("button_cancel");
+            this.ButtonApply.Text = StringLoader.GetText("button_apply");
+            /*this.TabPageGame.Text = StringLoader.GetText("tab_game");
+            this.GroupBoxGameDirectory.Text = StringLoader.GetText("box_game_dir");
+            this.ButtonGameChangeDirectory.Text = StringLoader.GetText("button_change");*/
+            this.ButtonPatcherChangeDirectory.Text = StringLoader.GetText("button_change");
+            this.TabPagePatcher.Text = StringLoader.GetText("tab_patcher");
+            this.GroupBoxPatcherDirectory.Text = StringLoader.GetText("box_patcher_dir");
+            this.GroupBoxUILanguagePicker.Text = StringLoader.GetText("box_language");
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             this.PendingRestart = false;
-            this.textBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
-            this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
+            //this.TextBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
+            this.TextBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
 
             var def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
             var en = new ResxLanguage("English", "en");
-            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { def, en };
+            this.ComboBoxUILanguage.DataSource = new ResxLanguage[] { def, en };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
             {
-                this.comboBoxUILanguage.SelectedItem = en;
+                this.ComboBoxUILanguage.SelectedItem = en;
             }
             else
             {
-                this.comboBoxUILanguage.SelectedItem = def;
+                this.ComboBoxUILanguage.SelectedItem = def;
             }
 
-            if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
+            if ((this.Owner as MainForm).CurrentState.In(MainForm.State.Idle, MainForm.State.RegionNotInstalled))
             {
-                this.textBoxGameDirectory.TextChanged += this.EnableApplyButton;
-                this.textBoxPatcherDirectory.TextChanged += this.EnableApplyButton;
-                this.comboBoxUILanguage.SelectedIndexChanged += this.EnableApplyButton;
+                //this.TextBoxGameDirectory.TextChanged += this.EnableApplyButton;
+                this.TextBoxPatcherDirectory.TextChanged += this.EnableApplyButton;
+                this.ComboBoxUILanguage.SelectedIndexChanged += this.EnableApplyButton;
             }
             else
             {
-                this.buttonGameChangeDirectory.Enabled = false;
-                this.buttonPatcherChangeDirectory.Enabled = false;
-                this.comboBoxUILanguage.Enabled = false;
+                //this.ButtonGameChangeDirectory.Enabled = false;
+                this.ButtonPatcherChangeDirectory.Enabled = false;
+                this.ComboBoxUILanguage.Enabled = false;
             }
         }
 
         private void EnableApplyButton(object sender, EventArgs e)
         {
-            this.buttonApply.Enabled = true;
+            this.ButtonApply.Enabled = true;
         }
 
-        private void ButtonChangeDirectory_Click(object sender, EventArgs e)
+        /*private void ButtonChangeDirectory_Click(object sender, EventArgs e)
         {
             using (var folderDialog = new FolderBrowserDialog
             {
@@ -106,7 +107,7 @@ namespace ClosersPatcher.Forms
                 {
                     if (Methods.IsClosersPath(folderDialog.SelectedPath))
                     {
-                        this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
+                        this.TextBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                     }
                     else
                     {
@@ -114,7 +115,7 @@ namespace ClosersPatcher.Forms
                     }
                 }
             }
-        }
+        }*/
 
         private void ButtonPatcherChangeDirectory_Click(object sender, EventArgs e)
         {
@@ -127,19 +128,19 @@ namespace ClosersPatcher.Forms
 
                 if (result == DialogResult.OK)
                 {
-                    this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
+                    this.TextBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
                 }
             }
         }
 
         private void ComboBoxUILanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.UILanguage = (this.comboBoxUILanguage.SelectedItem as ResxLanguage).Code;
+            this.UILanguage = (this.ComboBoxUILanguage.SelectedItem as ResxLanguage).Code;
         }
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
-            if (this.buttonApply.Enabled)
+            if (this.ButtonApply.Enabled)
             {
                 this.ApplyChanges();
             }
@@ -154,14 +155,14 @@ namespace ClosersPatcher.Forms
 
         private void ApplyChanges()
         {
-            if (UserSettings.GamePath != this.GameClientDirectory)
-                UserSettings.GamePath = this.GameClientDirectory;
+            /*if (UserSettings.GamePath != this.GameClientDirectory)
+                UserSettings.GamePath = this.GameClientDirectory;*/
 
             if (UserSettings.PatcherPath != this.PatcherWorkingDirectory)
             {
                 try
                 {
-                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).ComboBoxLanguages.ItemsAsString());
+                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetTranslationFolders());
                 }
                 catch (IOException ex)
                 {
@@ -178,7 +179,7 @@ namespace ClosersPatcher.Forms
                 this.PendingRestart = true;
             }
 
-            this.buttonApply.Enabled = false;
+            this.ButtonApply.Enabled = false;
 
             if (this.PendingRestart)
                 MsgBox.Notice(StringLoader.GetText("notice_pending_restart"));
@@ -187,13 +188,12 @@ namespace ClosersPatcher.Forms
         private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)
         {
             string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
-            string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
 
             foreach (var folder in movingFolders)
+            {
                 MoveDirectory(Path.Combine(oldPath, folder), newPath);
-
-            MoveDirectory(backupDirectory, newPath);
+            }
 
             MoveFile(logFilePath, newPath, false);
         }

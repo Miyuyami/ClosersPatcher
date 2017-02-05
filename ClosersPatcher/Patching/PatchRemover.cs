@@ -47,25 +47,18 @@ namespace ClosersPatcher.Patching
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("PatchRemover", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+            Logger.Debug(Methods.MethodFullName("PatchRemover", Thread.CurrentThread.ManagedThreadId, this.Language));
 
             Methods.CheckRunningPrograms();
 
-            ClosersFileManager.LoadFileConfiguration();
+            ClosersFileManager.LoadFileConfiguration(this.Language);
 
             if (Methods.IsTranslationOutdated(this.Language))
             {
-                try
-                {
-                    Methods.DeleteBackups();
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    Directory.CreateDirectory(Strings.FolderName.Backup);
-                }
+                Methods.DeleteBackups(this.Language);
             }
 
-            if (!Methods.BackupExists())
+            if (!Methods.BackupExists(this.Language))
             {
                 throw new Exception(StringLoader.GetText("exception_no_backup"));
             }
@@ -76,7 +69,7 @@ namespace ClosersPatcher.Patching
                 return;
             }
 
-            RestoreBackup();
+            RestoreBackup(this.Language);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -84,18 +77,18 @@ namespace ClosersPatcher.Patching
             this.PatchRemoverCompleted?.Invoke(sender, e);
         }
 
-        private static void RestoreBackup()
+        private static void RestoreBackup(Language language)
         {
-            if (!Directory.Exists(Strings.FolderName.Backup))
+            if (!Directory.Exists(language.BackupPath))
             {
                 return;
             }
 
-            string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+            string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
             foreach (var file in filePaths)
             {
-                string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
+                string path = Path.Combine(UserSettings.GamePath, file.Substring(language.BackupPath.Length + 1));
                 Logger.Info($"Restoring file original=[{path}] backup=[{file}]");
 
                 try

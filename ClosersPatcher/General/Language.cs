@@ -16,37 +16,59 @@
  * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using ClosersPatcher.Helpers.GlobalVariables;
 using System;
 
 namespace ClosersPatcher.General
 {
     internal class Language
     {
-        internal string Name { get; private set; }
-        internal DateTime LastUpdate { get; private set; }
+        internal string Id { get; }
+        internal string Name { get; }
+        internal DateTime LastUpdate { get; }
+        internal string ApplyingRegionId { get; }
+        internal string Path => System.IO.Path.Combine(this.ApplyingRegionId, this.Name);
+        internal string BackupPath => System.IO.Path.Combine(this.ApplyingRegionId, Strings.FolderName.Backup);
 
-        internal Language(string name)
+        internal Language(string id)
         {
-            this.Name = name;
+            this.Id = id;
         }
 
-        internal Language(string name, DateTime lastUpdate)
+        private Language(string id, string name, string applyingRegionId)
         {
+            this.Id = id;
+            this.Name = name;
+            this.ApplyingRegionId = applyingRegionId;
+        }
+
+        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId)
+        {
+            this.Id = id;
             this.Name = name;
             this.LastUpdate = lastUpdate;
+            this.ApplyingRegionId = applyingRegionId;
+        }
+
+        internal static Language BackupLanguage(string applyingRegionId)
+        {
+            return new Language("bak", Strings.FolderName.Backup, applyingRegionId);
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
+            {
                 return false;
+            }
+
             Language language = obj as Language;
-            return this.Name == language.Name;
+            return this.Id == language.Id;
         }
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return this.Id.GetHashCode();
         }
 
         public override string ToString()

@@ -124,6 +124,7 @@
     <Compile Include="General\ResxLanguage.cs" />
     <Compile Include="General\ClosersFile.cs" />
     <Compile Include="General\ClosersFileManager.cs" />
+    <Compile Include="General\Region.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\GlobalVariables\AssemblyAccessor.cs" />
     <Compile Include="Helpers\GlobalVariables\Strings.cs" />
@@ -163,6 +164,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

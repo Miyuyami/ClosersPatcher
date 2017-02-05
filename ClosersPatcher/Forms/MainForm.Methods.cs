@@ -19,15 +19,13 @@
 using ClosersPatcher.General;
 using ClosersPatcher.Helpers;
 using ClosersPatcher.Helpers.GlobalVariables;
-using MadMilkman.Ini;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace ClosersPatcher.Forms
 {
@@ -45,83 +43,95 @@ namespace ClosersPatcher.Forms
         internal void ResetTranslation(Language language)
         {
             DeleteTranslationIni(language);
-            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.ToString(), Methods.DateToString(language.LastUpdate));
         }
 
         private static void DeleteTranslationIni(Language language)
         {
-            string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
+            string iniPath = Path.Combine(language.Path, Strings.IniName.Translation);
             if (Directory.Exists(Path.GetDirectoryName(iniPath)))
             {
                 File.Delete(iniPath);
             }
         }
 
-        private static string GetClosersPathFromRegistry()
+        private static string GetClosersKRPathFromRegistry()
         {
             if (!Environment.Is64BitOperatingSystem)
             {
-                using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(Strings.Registry.Key32))
-                {
-                    if (key32 != null)
-                    {
-                        return Convert.ToString(key32.GetValue(Strings.Registry.Name, String.Empty));
-                    }
-                    else
-                    {
-                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
-                    }
-                }
+                string value = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.FolderPath);
+
+                return value;
             }
             else
             {
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(Strings.Registry.Key64))
+                string value = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key64Path, Strings.Registry.KR.FolderPath);
+
+                if (value == String.Empty)
                 {
-                    if (key != null)
-                    {
-                        return Convert.ToString(key.GetValue(Strings.Registry.Name, String.Empty));
-                    }
-                    else
-                    {
-                        using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(Strings.Registry.Key32))
-                        {
-                            if (key32 != null)
-                            {
-                                return Convert.ToString(key32.GetValue(Strings.Registry.Name, String.Empty));
-                            }
-                            else
-                            {
-                                throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
-                            }
-                        }
-                    }
+                    value = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.FolderPath);
                 }
+
+                return value;
             }
         }
 
-        private static Language[] GetAvailableLanguages()
+        private static string GetClosersJPPathFromRegistry()
         {
-            List<Language> langs = new List<Language>();
+            return String.Empty;
+        }
 
-            using (var client = new WebClient())
+        private void InitRegionsConfigData()
+        {
+            var doc = new XmlDocument();
+            doc.Load(Urls.TranslationHome + Strings.IniName.LanguagePack);
+
+            XmlElement configRoot = doc.DocumentElement;
+            XmlElement xmlRegions = configRoot[Strings.Xml.Regions];
+            int regionCount = xmlRegions.ChildNodes.Count;
+            Region[] regions = new Region[regionCount];
+
+            for (int i = 0; i < regionCount; i++)
             {
-                byte[] fileBytes = client.DownloadData(Urls.TranslationHome + Strings.IniName.LanguagePack);
-                IniFile ini = new IniFile(new IniOptions
+                XmlNode regionNode = xmlRegions.ChildNodes[i];
+
+                string regionId = regionNode.Name;
+                string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Name].Value);
+                XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
+                int languageCount = xmlLanguages.ChildNodes.Count;
+                Language[] regionLanguages = new Language[languageCount];
+
+                for (int j = 0; j < languageCount; j++)
                 {
-                    Encoding = Encoding.UTF8
-                });
-                using (var ms = new MemoryStream(fileBytes))
-                {
-                    ini.Load(ms);
+                    XmlNode languageNode = xmlLanguages.ChildNodes[j];
+
+                    string languageId = languageNode.Name;
+                    string languageName = languageNode.Attributes[Strings.Xml.Name].Value;
+                    string languageDateString = languageNode[Strings.Xml.Value].InnerText;
+                    DateTime languageDate = Methods.ParseDate(languageDateString);
+
+                    regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId);
                 }
 
-                foreach (IniSection section in ini.Sections)
-                {
-                    langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
-                }
+                regions[i] = new Region(regionId, regionName, regionLanguages);
             }
 
-            return langs.ToArray();
+            this.ComboBoxRegions.DataSource = regions.Length > 0 ? regions : null;
+
+            if (this.ComboBoxRegions.DataSource != null)
+            {
+                if (String.IsNullOrEmpty(UserSettings.RegionId))
+                {
+                    UserSettings.RegionId = (this.ComboBoxRegions.SelectedItem as Region).Id;
+                }
+                else
+                {
+                    int index = this.ComboBoxRegions.Items.IndexOf(new Region(UserSettings.RegionId));
+                    this.ComboBoxRegions.SelectedIndex = index == -1 ? 0 : index;
+                }
+
+                ComboBoxRegions_SelectionChangeCommitted(this, EventArgs.Empty);
+            }
         }
 
         private static string GetSHA256(string filename)
@@ -185,6 +195,16 @@ namespace ClosersPatcher.Forms
             }
 
             return array;
+        }
+
+        private void ResetNotifier(object sender, EventArgs e)
+        {
+            this.LabelNotifier.Text = StringLoader.GetText("form_label_notifier_label_idle");
+        }
+
+        internal IEnumerable<string> GetTranslationFolders()
+        {
+            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.ToString());
         }
     }
 }

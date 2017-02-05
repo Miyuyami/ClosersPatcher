@@ -23,20 +23,21 @@ namespace ClosersPatcher.Downloading
 {
     internal class DownloaderCompletedEventArgs : EventArgs
     {
-        internal Language Language { get; private set; }
-        internal bool Cancelled { get; private set; }
-        internal Exception Error { get; private set; }
+        internal Language Language { get; }
+        internal bool IsDownloadingInClientFolder { get; }
+        internal bool Cancelled { get; }
+        internal Exception Error { get; }
 
         internal DownloaderCompletedEventArgs(bool cancelled, Exception error)
         {
-            this.Language = null;
             this.Cancelled = cancelled;
             this.Error = error;
         }
 
-        internal DownloaderCompletedEventArgs(Language language, bool cancelled, Exception error)
+        internal DownloaderCompletedEventArgs(Language language, bool isDownloadingInClientFolder, bool cancelled, Exception error)
         {
             this.Language = language;
+            this.IsDownloadingInClientFolder = isDownloadingInClientFolder;
             this.Cancelled = cancelled;
             this.Error = error;
         }

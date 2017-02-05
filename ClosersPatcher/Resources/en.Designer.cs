@@ -260,11 +260,20 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Closers installation not found..
+        ///   Looks up a localized string similar to Closers {0} installation not found..
         /// </summary>
         internal static string exception_game_install_not_found {
             get {
                 return ResourceManager.GetString("exception_game_install_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to read {0}..
+        /// </summary>
+        internal static string exception_generic_read_error {
+            get {
+                return ResourceManager.GetString("exception_generic_read_error", resourceCulture);
             }
         }
         
@@ -361,11 +370,65 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        internal static string form_label_language_pick {
+            get {
+                return ResourceManager.GetString("form_label_language_pick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New translations for {0} - ({1}).
         /// </summary>
         internal static string form_label_new_translation {
             get {
                 return ResourceManager.GetString("form_label_new_translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation patch applied successfully..
+        /// </summary>
+        internal static string form_label_notifier_label_apply_patch_success {
+            get {
+                return ResourceManager.GetString("form_label_notifier_label_apply_patch_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string form_label_notifier_label_idle {
+            get {
+                return ResourceManager.GetString("form_label_notifier_label_idle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original files restored successfully..
+        /// </summary>
+        internal static string form_label_notifier_label_original_files_success {
+            get {
+                return ResourceManager.GetString("form_label_notifier_label_original_files_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup restored successfully..
+        /// </summary>
+        internal static string form_label_notifier_label_remove_patch_success {
+            get {
+                return ResourceManager.GetString("form_label_notifier_label_remove_patch_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server:.
+        /// </summary>
+        internal static string form_label_region_pick {
+            get {
+                return ResourceManager.GetString("form_label_region_pick", resourceCulture);
             }
         }
         
@@ -402,6 +465,24 @@ namespace ClosersPatcher.Resources {
         internal static string form_refresh {
             get {
                 return ResourceManager.GetString("form_refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Japan.
+        /// </summary>
+        internal static string form_region_jp {
+            get {
+                return ResourceManager.GetString("form_region_jp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Korea.
+        /// </summary>
+        internal static string form_region_kr {
+            get {
+                return ResourceManager.GetString("form_region_kr", resourceCulture);
             }
         }
         
@@ -496,7 +577,7 @@ namespace ClosersPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Outdated translation files, force patching will now commence..
+        ///   Looks up a localized string similar to Outdated translation files, the patcher will proceed to redownloading translations..
         /// </summary>
         internal static string notice_outdated_translation {
             get {

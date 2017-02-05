@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <closersPatcher>
   <regions>
-    <kr name="Korea">
+    <kr name="form_region_kr">
       <languages>
         <en name="English">
           <value>3/Feb/2017 9:11 PM</value>

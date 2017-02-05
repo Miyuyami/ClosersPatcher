@@ -138,7 +138,7 @@ namespace ClosersPatcher.Helpers
             };
             thread.Start();
 
-            Logger.Debug(Methods.MethodFullName("Logger.Run", thread.ManagedThreadId.ToString()));
+            Logger.Debug($"Logger running on thread id [{thread.ManagedThreadId}]");
         }
     }
 }

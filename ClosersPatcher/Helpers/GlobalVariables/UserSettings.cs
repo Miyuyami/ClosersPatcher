@@ -29,7 +29,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
         {
             get
             {
-                if (String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory))
+                if (!Directory.Exists(Settings.Default.PatcherWorkingDirectory))
                 {
                     return PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
                 }
@@ -68,15 +68,28 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             }
         }
 
-        internal static string LanguageName
+        internal static string LanguageId
         {
             get
             {
-                return Settings.Default.LanguageName;
+                return Settings.Default.LanguageId;
             }
             set
             {
-                Settings.Default.LanguageName = value;
+                Settings.Default.LanguageId = value;
+                Settings.Default.Save();
+            }
+        }
+
+        internal static string RegionId
+        {
+            get
+            {
+                return Settings.Default.RegionId;
+            }
+            set
+            {
+                Settings.Default.RegionId = value;
                 Settings.Default.Save();
             }
         }

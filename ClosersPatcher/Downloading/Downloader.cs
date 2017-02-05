@@ -35,6 +35,7 @@ namespace ClosersPatcher.Downloading
         private BackgroundWorker Worker;
         private WebClient Client;
         private Language Language;
+        private bool IsDownloadingInClientFolder = false;
 
         internal Downloader()
         {
@@ -54,18 +55,42 @@ namespace ClosersPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("Downloader", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language != null ? this.Language.ToString() : "null"));
+            Logger.Debug(Methods.MethodFullName("Downloader", Thread.CurrentThread.ManagedThreadId, this.Language != null ? this.Language.ToString() : "null"));
 
             if (Methods.IsGameLatestVersion())
             {
-                if (this.Language != null)
+                if (this.IsDownloadingInClientFolder)
+                {
+                    Logger.Info("Downloading backup");
+
+                    if (Methods.IsTranslationSupported(this.Language))
+                    {
+                        if (this.Worker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+
+                        ClosersFileManager.LoadFileConfiguration(this.Language);
+                    }
+                    else
+                    {
+                        throw new Exception(StringLoader.GetText("exception_backup_version_not_supported"));
+                    }
+                }
+                else
                 {
                     if (Methods.IsTranslationSupported(this.Language))
                     {
                         if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
                         {
-                            Methods.DeleteBackups();
-                            ClosersFileManager.LoadFileConfiguration();
+                            if (this.Worker.CancellationPending)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            ClosersFileManager.LoadFileConfiguration(this.Language);
                         }
                         else
                         {
@@ -75,19 +100,6 @@ namespace ClosersPatcher.Downloading
                     else
                     {
                         throw new Exception(StringLoader.GetText("exception_version_not_supported"));
-                    }
-                }
-                else
-                {
-                    Logger.Info("Downloading backup");
-
-                    if (Methods.IsTranslationSupported(new Language(Strings.FolderName.Backup)))
-                    {
-                        ClosersFileManager.LoadFileConfiguration();
-                    }
-                    else
-                    {
-                        throw new Exception(StringLoader.GetText("exception_backup_version_not_supported"));
                     }
                 }
             }
@@ -127,13 +139,13 @@ namespace ClosersPatcher.Downloading
 
                 string swFilePath;
 
-                if (this.Language != null)
+                if (this.IsDownloadingInClientFolder)
                 {
-                    swFilePath = Path.Combine(this.Language.Name, swFile.Path, Path.GetFileName(swFile.PathD));
+                    swFilePath = Path.Combine(UserSettings.GamePath, swFile.Path, Path.GetFileName(swFile.PathD));
                 }
                 else
                 {
-                    swFilePath = Path.Combine(UserSettings.GamePath, swFile.Path, Path.GetFileName(swFile.PathD));
+                    swFilePath = Path.Combine(this.Language.Path, swFile.Path, Path.GetFileName(swFile.PathD));
                 }
                 string swFileDirectory = swFileDirectory = Path.GetDirectoryName(swFilePath);
 
@@ -146,23 +158,14 @@ namespace ClosersPatcher.Downloading
                 }
                 else
                 {
-                    this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
+                    this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(this.Language, this.IsDownloadingInClientFolder, e.Cancelled, e.Error));
                 }
             }
         }
 
         private void DownloadNext(int index)
         {
-            Uri uri;
-
-            if (this.Language != null)
-            {
-                uri = new Uri(Urls.TranslationHome + this.Language.Name + '/' + ClosersFileManager.GetElementAt(index).PathD);
-            }
-            else
-            {
-                uri = new Uri(Urls.TranslationHome + Strings.FolderName.Backup + '/' + ClosersFileManager.GetElementAt(index).PathD);
-            }
+            Uri uri = new Uri(Urls.TranslationHome + this.Language.Path + '/' + ClosersFileManager.GetElementAt(index).PathD);
 
             this.Client.DownloadDataAsync(uri, index);
 
@@ -182,7 +185,20 @@ namespace ClosersPatcher.Downloading
                 return;
             }
 
+            this.IsDownloadingInClientFolder = false;
             this.Language = language;
+            this.Worker.RunWorkerAsync();
+        }
+
+        internal void Run(Region region)
+        {
+            if (this.Worker.IsBusy || this.Client.IsBusy)
+            {
+                return;
+            }
+
+            this.IsDownloadingInClientFolder = true;
+            this.Language = Language.BackupLanguage(region.Id);
             this.Worker.RunWorkerAsync();
         }
     }

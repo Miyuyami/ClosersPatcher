@@ -22,7 +22,6 @@ using ClosersPatcher.Helpers.GlobalVariables;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace ClosersPatcher.Forms
@@ -31,31 +30,7 @@ namespace ClosersPatcher.Forms
     {
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Language[] languages = GetAvailableLanguages();
-            this.ComboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
-
-            var gamePath = UserSettings.GamePath;
-            if (String.IsNullOrEmpty(gamePath) || !Methods.IsClosersPath(gamePath))
-            {
-                UserSettings.GamePath = GetClosersPathFromRegistry();
-            }
-
-            if (this.ComboBoxLanguages.DataSource != null)
-            {
-                Logger.Info($"Loading languages: {String.Join(" ", languages.Select(l => l.ToString()))}");
-
-                if (String.IsNullOrEmpty(UserSettings.LanguageName))
-                {
-                    UserSettings.LanguageName = (this.ComboBoxLanguages.SelectedItem as Language).Name;
-                }
-                else
-                {
-                    int index = this.ComboBoxLanguages.Items.IndexOf(new Language(UserSettings.LanguageName));
-                    this.ComboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
-                }
-            }
-
-            Directory.CreateDirectory(Strings.FolderName.Backup);
+            this.InitRegionsConfigData();
         }
 
         private void ForceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -71,18 +46,78 @@ namespace ClosersPatcher.Forms
         private void OriginalFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.CurrentState = State.Download;
-            this.Downloader.Run(null);
+            this.Downloader.Run(this.ComboBoxRegions.SelectedItem as Region);
         }
 
-        private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxLanguages_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (this.ComboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
+            if (this.ComboBoxLanguages.SelectedItem is Language language)
             {
-                this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+                Logger.Info($"Selected language '{language}'");
+                UserSettings.LanguageId = this.ComboBoxLanguages.SelectedIndex == -1 ? null : (this.ComboBoxLanguages.SelectedItem as Language).Id;
+
+                if (Methods.HasNewTranslations(language))
+                {
+                    this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language, Methods.DateToString(language.LastUpdate));
+                }
+                else
+                {
+                    this.LabelNewTranslations.Text = String.Empty;
+                }
             }
-            else
+        }
+
+        private void ComboBoxRegions_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (this.ComboBoxRegions.SelectedItem is Region region)
             {
-                this.LabelNewTranslations.Text = String.Empty;
+                Logger.Info($"Selected region '{region}'");
+                UserSettings.RegionId = this.ComboBoxRegions.SelectedIndex == -1 ? null : (this.ComboBoxRegions.SelectedItem as Region).Id;
+
+                Language[] languages = region.AppliedLanguages;
+
+                this.ComboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
+
+                if (this.ComboBoxLanguages.DataSource != null)
+                {
+                    if (String.IsNullOrEmpty(UserSettings.LanguageId))
+                    {
+                        UserSettings.LanguageId = (this.ComboBoxLanguages.SelectedItem as Language).Id;
+                    }
+                    else
+                    {
+                        int index = this.ComboBoxLanguages.Items.IndexOf(new Language(UserSettings.LanguageId));
+                        this.ComboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
+                    }
+
+                    ComboBoxLanguages_SelectionChangeCommitted(sender, e);
+                }
+
+                switch (region.Id)
+                {
+                    case "kr":
+                        UserSettings.GamePath = GetClosersKRPathFromRegistry();
+
+                        break;
+                    case "jp":
+                        UserSettings.GamePath = GetClosersJPPathFromRegistry();
+
+                        break;
+                    default:
+                        UserSettings.GamePath = String.Empty;
+
+                        break;
+                }
+
+                if (UserSettings.GamePath == String.Empty)
+                {
+                    this.CurrentState = State.RegionNotInstalled;
+                    MsgBox.Error(StringLoader.GetText("exception_game_install_not_found", region.ToString()));
+                }
+                else
+                {
+                    this.CurrentState = State.Idle;
+                }
             }
         }
 
@@ -94,20 +129,26 @@ namespace ClosersPatcher.Forms
 
         private void RefreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Language language = this.ComboBoxLanguages.SelectedItem as Language;
-            Language[] languages = GetAvailableLanguages();
-            this.ComboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
-
-            if (language != null && this.ComboBoxLanguages.DataSource != null)
-            {
-                int index = this.ComboBoxLanguages.Items.IndexOf(language);
-                this.ComboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
-            }
+            this.InitRegionsConfigData();
         }
 
         private void OpenClosersWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(Urls.ClosersHome);
+            switch ((this.ComboBoxRegions.SelectedItem as Region).Id)
+            {
+                case "kr":
+                    Process.Start(Urls.ClosersKRHome);
+
+                    break;
+                case "jp":
+                    Process.Start(Urls.ClosersJPHome);
+
+                    break;
+                default:
+                    Process.Start("https://www.google.com/");
+
+                    break;
+            }
         }
 
         private void UploadLogToPastebinToolStripMenuItem_Click(object sender, EventArgs e)
@@ -168,7 +209,7 @@ namespace ClosersPatcher.Forms
             {
                 Logger.Info($"{this.Text} closing abnormally. Reason=[{e.CloseReason.ToString()}]");
             }
-            else if (this.CurrentState != State.Idle)
+            else if (!this.CurrentState.In(State.Idle, State.RegionNotInstalled))
             {
                 MsgBox.Error(StringLoader.GetText("exception_cannot_close", AssemblyAccessor.Title));
 
@@ -177,7 +218,6 @@ namespace ClosersPatcher.Forms
             else
             {
                 Logger.Info($"{this.Text} closing. Reason=[{e.CloseReason.ToString()}]");
-                UserSettings.LanguageName = this.ComboBoxLanguages.SelectedIndex == -1 ? null : (this.ComboBoxLanguages.SelectedItem as Language).Name;
             }
         }
 

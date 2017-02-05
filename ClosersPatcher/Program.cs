@@ -31,15 +31,12 @@ namespace ClosersPatcher
         [STAThread]
         static void Main()
         {
-            if (!Directory.Exists(UserSettings.PatcherPath))
-            {
-                UserSettings.PatcherPath = "";
-            }
+            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
+            Logger.Run();
+
             string[] args = Environment.GetCommandLineArgs();
             var argsList = new List<string>(args);
 
-            Logger.Run();
-            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
             argsList.Insert(0, Thread.CurrentThread.ManagedThreadId.ToString());
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), argsList.ToArray()));
 

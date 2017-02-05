@@ -19,6 +19,7 @@
 using ClosersPatcher.General;
 using ClosersPatcher.Helpers.GlobalVariables;
 using MadMilkman.Ini;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,58 +40,115 @@ namespace ClosersPatcher.Helpers
 
         internal static DateTime ParseDate(string date)
         {
-            return DateTime.ParseExact(date, DateFormat, CultureInfo.InvariantCulture);
+            return ParseDate(date, DateFormat);
+        }
+
+        internal static DateTime ParseDate(string date, string format)
+        {
+            return DateTime.ParseExact(date, format, CultureInfo.InvariantCulture);
         }
 
         internal static string DateToString(DateTime date)
         {
-            return date.ToString(DateFormat, CultureInfo.InvariantCulture);
+            return DateToString(date, DateFormat);
+        }
+
+        internal static string DateToString(DateTime date, string format)
+        {
+            return date.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        internal static bool LoadIni(out IniFile iniFile, string iniPath)
+        {
+            return LoadIni(out iniFile, new IniOptions(), iniPath);
+        }
+
+        internal static bool LoadIni(out IniFile iniFile, IniOptions iniOptions, string iniPath)
+        {
+            if (!File.Exists(iniPath))
+            {
+                iniFile = null;
+                return false;
+            }
+
+            iniFile = new IniFile(iniOptions);
+            iniFile.Load(iniPath);
+
+            return true;
+        }
+
+        internal static bool LoadVerIni(out IniFile verIni, string verIniPath)
+        {
+            return LoadVerIni(out verIni, new IniOptions(), verIniPath);
+        }
+
+        internal static bool LoadVerIni(out IniFile verIni, IniOptions verIniOptions, string verIniPath)
+        {
+            if (!LoadIni(out verIni, verIniOptions, verIniPath))
+            {
+                return false;
+            }
+
+            if (!verIni.Sections.Contains(Strings.IniName.Ver.Section))
+            {
+                return false;
+            }
+
+            IniSection clientVerSection = verIni.Sections[Strings.IniName.Ver.Section];
+            if (!clientVerSection.Keys.Contains(Strings.IniName.Ver.KeyMVer) ||
+                !clientVerSection.Keys.Contains(Strings.IniName.Ver.KeyTime))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static bool LoadPatcherIni(out IniFile patcherIni, string patcherIniPath)
+        {
+            return LoadPatcherIni(out patcherIni, new IniOptions(), patcherIniPath);
+        }
+
+        internal static bool LoadPatcherIni(out IniFile patcherIni, IniOptions patcherIniOptions, string patcherIniPath)
+        {
+            if (!LoadVerIni(out patcherIni, patcherIniOptions, patcherIniPath))
+            {
+                return false;
+            }
+
+            if (!patcherIni.Sections.Contains(Strings.IniName.Patcher.Section))
+            {
+                return false;
+            }
+
+            IniSection clientVerSection = patcherIni.Sections[Strings.IniName.Patcher.Section];
+            if (!clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyDate) ||
+                !clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         internal static bool HasNewTranslations(Language language)
         {
-            string directory = language.Name;
+            string translationFolder = language.Path;
 
-            if (!Directory.Exists(directory))
+            if (!Directory.Exists(translationFolder))
             {
                 return true;
             }
 
-            string filePath = Path.Combine(directory, Strings.IniName.Translation);
-            if (!File.Exists(filePath))
+            string selectedTranslationIniPath = Path.Combine(translationFolder, Strings.IniName.Translation);
+            if (!LoadPatcherIni(out IniFile translationIni, selectedTranslationIniPath))
             {
-                return true;
+                return false;
             }
-
-            IniFile ini = new IniFile();
-            ini.Load(filePath);
-
-            if (!ini.Sections.Contains(Strings.IniName.Patcher.Section))
-            {
-                return true;
-            }
-
-            IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
-            if (!section.Keys.Contains(Strings.IniName.Pack.KeyDate))
-            {
-                return true;
-            }
-
-            string date = section.Keys[Strings.IniName.Pack.KeyDate].Value;
+            IniSection translationPatcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
+            string date = translationPatcherSection.Keys[Strings.IniName.Patcher.KeyDate].Value;
 
             return language.LastUpdate > ParseDate(date);
-        }
-
-        internal static bool IsClosersPath(string path)
-        {
-            bool f1 = Directory.Exists(path);
-            string dataPath = Path.Combine(path, Strings.FolderName.Data);
-            bool f2 = Directory.Exists(dataPath);
-            bool f3 = File.Exists(Path.Combine(path, Strings.FileName.GameExe));
-            bool f4 = File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
-            bool f5 = File.Exists(Path.Combine(dataPath, Strings.FileName.CMFScriptPack));
-
-            return f1 && f2 && f3 && f4 && f5;
         }
 
         internal static bool IsGameLatestVersion()
@@ -98,20 +156,26 @@ namespace ClosersPatcher.Helpers
 #if DEBUG
             return true;
 #endif
-            IniFile serverIni = GetIniFromUrl(Urls.ClosersSettingsHome + Strings.IniName.ClientVer);
-            IniFile clientIni = new IniFile();
-            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
+            IniFile regionIni = GetIniFromUrl(Urls.ClosersSettingsHome + Strings.IniName.ClientVer);
+            IniSection regionVerSection = regionIni.Sections[Strings.IniName.Ver.Section];
 
-            string serverMVer = serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-            string clientMVer = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-            if (clientMVer != serverMVer)
+            string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+            if (!LoadVerIni(out IniFile clientIni, clientIniPath))
+            {
+                return false;
+            }
+            IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
+
+            string regionMVer = regionVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
+            string clientMVer = clientVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
+            if (clientMVer != regionMVer)
             {
                 return false;
             }
 
-            string serverTime = serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-            string clientTime = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-            if (clientTime != serverTime)
+            string regionTime = regionVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
+            string clientTime = clientVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
+            if (clientTime != regionTime)
             {
                 return false;
             }
@@ -121,33 +185,30 @@ namespace ClosersPatcher.Helpers
 
         internal static bool IsTranslationOutdated(Language language)
         {
-            string selectedTranslationPath = Path.Combine(language.Name, Strings.IniName.Translation);
-            if (!File.Exists(selectedTranslationPath))
+            string selectedTranslationIniPath = Path.Combine(language.Path, Strings.IniName.Translation);
+            if (!LoadPatcherIni(out IniFile translationIni, selectedTranslationIniPath))
             {
                 return true;
             }
+            IniSection translationPatcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
+            IniSection translationVerSection = translationIni.Sections[Strings.IniName.Ver.Section];
 
-            IniFile translationIni = new IniFile();
-            translationIni.Load(selectedTranslationPath);
-
-            if (!translationIni.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Ver.KeyMVer) ||
-                !translationIni.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Ver.KeyTime))
+            string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+            if (!LoadVerIni(out IniFile clientIni, clientIniPath))
             {
-                throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
+                throw new Exception(StringLoader.GetText("exception_generic_read_error", clientIniPath));
             }
+            IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
 
-            IniFile clientIni = new IniFile();
-            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-
-            string translationMVer = translationIni.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-            string clientMVer = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
+            string translationMVer = translationVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
+            string clientMVer = clientVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
             if (clientMVer != translationMVer)
             {
                 return true;
             }
 
-            string translationTime = translationIni.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-            string clientTime = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
+            string translationTime = translationVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
+            string clientTime = clientVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
             if (clientTime != translationTime)
             {
                 return true;
@@ -161,20 +222,26 @@ namespace ClosersPatcher.Helpers
 #if DEBUG
             return true;
 #endif
-            IniFile clientIni = new IniFile();
-            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-            IniFile supportedIni = GetIniFromUrl(Urls.TranslationHome + language.Name + '/' + Strings.IniName.ClientVer);
+            IniFile supportedTranslationIni = GetIniFromUrl(Urls.TranslationHome + language.Path + '/' + Strings.IniName.ClientVer);
+            IniSection supportedTranslationVerSection = supportedTranslationIni.Sections[Strings.IniName.Ver.Section];
 
-            string translationMVer = supportedIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-            string clientMVer = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-            if (clientMVer != translationMVer)
+            string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+            if (!LoadVerIni(out IniFile clientIni, clientIniPath))
+            {
+                throw new Exception(StringLoader.GetText("exception_generic_read_error", clientIniPath));
+            }
+            IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
+
+            string supportedTranslationMVer = supportedTranslationVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
+            string clientMVer = clientVerSection.Keys[Strings.IniName.Ver.KeyMVer].Value;
+            if (clientMVer != supportedTranslationMVer)
             {
                 return false;
             }
 
-            string translationTime = supportedIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-            string clientTime = clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-            if (clientTime != translationTime)
+            string supportedTranslationTime = supportedTranslationVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
+            string clientTime = clientVerSection.Keys[Strings.IniName.Ver.KeyTime].Value;
+            if (clientTime != supportedTranslationTime)
             {
                 return false;
             }
@@ -182,11 +249,11 @@ namespace ClosersPatcher.Helpers
             return true;
         }
 
-        internal static void DeleteBackups()
+        internal static void DeleteBackups(Language language)
         {
             try
             {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+                string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
                 foreach (var file in filePaths)
                 {
@@ -195,21 +262,21 @@ namespace ClosersPatcher.Helpers
             }
             catch (DirectoryNotFoundException)
             {
-                Directory.CreateDirectory(Strings.FolderName.Backup);
+                Directory.CreateDirectory(language.BackupPath);
             }
         }
 
-        internal static bool BackupExists()
+        internal static bool BackupExists(Language language)
         {
             try
             {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+                string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
                 return filePaths.Length > 0;
             }
             catch (DirectoryNotFoundException)
             {
-                Directory.CreateDirectory(Strings.FolderName.Backup);
+                Directory.CreateDirectory(language.BackupPath);
             }
 
             return false;
@@ -233,18 +300,22 @@ namespace ClosersPatcher.Helpers
                 }
                 catch (WebException e)
                 {
-                    if (e.InnerException is SocketException)
+                    if (e.InnerException is SocketException innerException)
                     {
-                        var innerException = e.InnerException as SocketException;
                         if (innerException.SocketErrorCode == SocketError.ConnectionRefused)
                         {
-                            Logger.Error(e);
-                            MsgBox.Error(StringLoader.GetText("exception_server_refused_connection"));
+                            throw new Exception(StringLoader.GetText("exception_region_refused_connection"));
+                        }
+                        else
+                        {
+                            throw;
                         }
                     }
+                    else
+                    {
+                        throw;
+                    }
                 }
-
-                return null;
             }
         }
 
@@ -253,17 +324,17 @@ namespace ClosersPatcher.Helpers
             return $"{method.ReflectedType.FullName}.{method.Name}";
         }
 
-        internal static string MethodParams(params string[] args)
+        internal static string MethodParams(params object[] args)
         {
             return $"{(String.Join(", ", args))}";
         }
 
-        internal static string MethodFullName(MethodBase method, params string[] args)
+        internal static string MethodFullName(MethodBase method, params object[] args)
         {
             return $"{MethodName(method)}({MethodParams(args)})";
         }
 
-        internal static string MethodFullName(string method, params string[] args)
+        internal static string MethodFullName(string method, params object[] args)
         {
             return $"{method}({MethodParams(args)})";
         }
@@ -306,6 +377,24 @@ namespace ClosersPatcher.Helpers
             }
 
             throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        internal static string GetRegistryValue(RegistryKey regKey, string path, string varName)
+        {
+            return GetRegistryValue(regKey, path, varName, String.Empty);
+        }
+
+        internal static string GetRegistryValue(RegistryKey regKey, string path, string varName, object defaultValue)
+        {
+            using (RegistryKey key = regKey.OpenSubKey(path))
+            {
+                if (key == null)
+                {
+                    return defaultValue.ToString();
+                }
+
+                return Convert.ToString(key.GetValue(varName, defaultValue));
+            }
         }
     }
 }

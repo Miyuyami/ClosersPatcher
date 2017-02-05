@@ -12,8 +12,8 @@ namespace ClosersPatcher.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -50,12 +50,12 @@ namespace ClosersPatcher.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LanguageName {
+        public string LanguageId {
             get {
-                return ((string)(this["LanguageName"]));
+                return ((string)(this["LanguageId"]));
             }
             set {
-                this["LanguageName"] = value;
+                this["LanguageId"] = value;
             }
         }
         
@@ -80,6 +80,18 @@ namespace ClosersPatcher.Properties {
             }
             set {
                 this["Sound"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RegionId {
+            get {
+                return ((string)(this["RegionId"]));
+            }
+            set {
+                this["RegionId"] = value;
             }
         }
     }

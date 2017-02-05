@@ -17,7 +17,6 @@
  */
 
 using ClosersPatcher.Downloading;
-using ClosersPatcher.General;
 using ClosersPatcher.Helpers;
 using ClosersPatcher.Helpers.GlobalVariables;
 using ClosersPatcher.Patching;
@@ -37,7 +36,8 @@ namespace ClosersPatcher.Forms
             Idle = 0,
             Download,
             ApplyPatch,
-            RemovePatch
+            RemovePatch,
+            RegionNotInstalled
         }
 
         private State _state;
@@ -59,6 +59,7 @@ namespace ClosersPatcher.Forms
                     {
                         case State.Idle:
                             this.ComboBoxLanguages.Enabled = true;
+                            this.ComboBoxRegions.Enabled = true;
                             this.ButtonDownload.Enabled = true;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
                             this.ButtonApplyPatch.Enabled = true;
@@ -74,6 +75,7 @@ namespace ClosersPatcher.Forms
                             break;
                         case State.Download:
                             this.ComboBoxLanguages.Enabled = false;
+                            this.ComboBoxRegions.Enabled = false;
                             this.ButtonDownload.Enabled = true;
                             this.ButtonDownload.Text = StringLoader.GetText("button_cancel");
                             this.ButtonApplyPatch.Enabled = false;
@@ -89,6 +91,7 @@ namespace ClosersPatcher.Forms
                             break;
                         case State.ApplyPatch:
                             this.ComboBoxLanguages.Enabled = false;
+                            this.ComboBoxRegions.Enabled = false;
                             this.ButtonDownload.Enabled = false;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
                             this.ButtonApplyPatch.Enabled = true;
@@ -104,6 +107,7 @@ namespace ClosersPatcher.Forms
                             break;
                         case State.RemovePatch:
                             this.ComboBoxLanguages.Enabled = false;
+                            this.ComboBoxRegions.Enabled = false;
                             this.ButtonDownload.Enabled = false;
                             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
                             this.ButtonApplyPatch.Enabled = false;
@@ -117,10 +121,26 @@ namespace ClosersPatcher.Forms
                             this.ToolStripProgressBar.Style = ProgressBarStyle.Marquee;
 
                             break;
+                        case State.RegionNotInstalled:
+                            this.ComboBoxLanguages.Enabled = false;
+                            this.ComboBoxRegions.Enabled = true;
+                            this.ButtonDownload.Enabled = false;
+                            this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
+                            this.ButtonApplyPatch.Enabled = false;
+                            this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
+                            this.ButtonRemovePatch.Enabled = false;
+                            this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
+                            this.OriginalFilesToolStripMenuItem.Enabled = false;
+                            this.RefreshToolStripMenuItem.Enabled = false;
+                            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
+                            this.ToolStripProgressBar.Value = this.ToolStripProgressBar.Minimum;
+                            this.ToolStripProgressBar.Style = ProgressBarStyle.Blocks;
+
+                            break;
                     }
 
                     Logger.Info($"State=[{value}]");
-                    this.ComboBoxLanguages_SelectedIndexChanged(this, null);
+                    this.ComboBoxLanguages_SelectionChangeCommitted(this, EventArgs.Empty);
                     this._state = value;
                 }
             }
@@ -140,28 +160,47 @@ namespace ClosersPatcher.Forms
 
             this.InitializeComponent();
             this.InitializeTextComponent();
-            Logger.Info($"[{this.Text}]");// starting in UI Language=[{UserSettings.UILanguageCode}]");
+            this.InitializeComponentAdditionalEvents();
+            Logger.Info($"[{this.Text}] starting in UI Language=[{UserSettings.UILanguageCode}]");
         }
 
         private void InitializeTextComponent()
         {
             this.MenuToolStripMenuItem.Text = StringLoader.GetText("form_menu");
-            this.SettingsToolStripMenuItem.Text = StringLoader.GetText("form_settings");
-            this.RefreshToolStripMenuItem.Text = StringLoader.GetText("form_refresh");
-            this.AboutToolStripMenuItem.Text = StringLoader.GetText("form_about");
             this.OriginalFilesToolStripMenuItem.Text = StringLoader.GetText("form_original_files");
             this.OpenClosersWebpageToolStripMenuItem.Text = StringLoader.GetText("form_open_closers_webpage");
             this.UploadLogToPastebinToolStripMenuItem.Text = StringLoader.GetText("form_upload_log");
-            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
+            this.ButtonExit.Text = StringLoader.GetText("button_exit");
+            this.SettingsToolStripMenuItem.Text = StringLoader.GetText("form_settings");
+            this.RefreshToolStripMenuItem.Text = StringLoader.GetText("form_refresh");
+            this.AboutToolStripMenuItem.Text = StringLoader.GetText("form_about");
+            this.LabelRegionPick.Text = StringLoader.GetText("form_label_region_pick");
+            this.LabelLanguagePick.Text = StringLoader.GetText("form_label_language_pick");
             this.ButtonDownload.Text = StringLoader.GetText("button_download_translation");
             this.ButtonApplyPatch.Text = StringLoader.GetText("button_apply_patch");
             this.ButtonRemovePatch.Text = StringLoader.GetText("button_remove_patch");
-            this.ButtonExit.Text = StringLoader.GetText("button_exit");
+            this.LabelNotifier.Text = StringLoader.GetText("form_label_notifier_label_idle");
+            this.ToolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
             this.NotifyIcon.BalloonTipText = StringLoader.GetText("notify_balloon_text");
             this.NotifyIcon.BalloonTipTitle = StringLoader.GetText("notify_balloon_title");
             this.NotifyIcon.Text = StringLoader.GetText("notify_text");
             this.SpeakerToolStripMenuItem.Image = UserSettings.HasSound ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
+        }
+
+        private void InitializeComponentAdditionalEvents()
+        {
+            this.OriginalFilesToolStripMenuItem.Click += this.ResetNotifier;
+            this.OpenClosersWebpageToolStripMenuItem.Click += this.ResetNotifier;
+            this.UploadLogToPastebinToolStripMenuItem.Click += this.ResetNotifier;
+            this.SettingsToolStripMenuItem.Click += this.ResetNotifier;
+            this.RefreshToolStripMenuItem.Click += this.ResetNotifier;
+            this.ButtonDownload.Click += this.ResetNotifier;
+            this.ButtonApplyPatch.Click += this.ResetNotifier;
+            this.ButtonRemovePatch.Click += this.ResetNotifier;
+            this.ButtonDownload.Click += this.ResetNotifier;
+            this.ComboBoxLanguages.SelectionChangeCommitted += this.ResetNotifier;
+            this.ComboBoxRegions.SelectionChangeCommitted += this.ResetNotifier;
         }
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
@@ -188,37 +227,30 @@ namespace ClosersPatcher.Forms
             {
                 Logger.Debug($"{sender.ToString()} successfuly completed");
 
-                if (e.Language != null)
+                if (e.IsDownloadingInClientFolder)
                 {
-                    IniFile ini = new IniFile(new IniOptions
-                    {
-                        KeyDuplicate = IniDuplication.Ignored,
-                        SectionDuplicate = IniDuplication.Ignored
-                    });
-                    ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-                    string clientMVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyMVer].Value;
-                    string clientTime = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.KeyTime].Value;
-
-                    string iniPath = Path.Combine(e.Language.Name, Strings.IniName.Translation);
-                    if (!File.Exists(iniPath))
-                    {
-                        File.Create(iniPath).Dispose();
-                    }
-
-                    ini.Sections.Clear();
-                    ini.Load(iniPath);
-                    ini.Sections.Add(Strings.IniName.Patcher.Section);
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyMVer);
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyMVer].Value = clientMVer;
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Ver.KeyTime);
-                    ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Ver.KeyTime].Value = clientTime;
-                    ini.Save(iniPath);
+                    Methods.DeleteBackups(e.Language);
+                    this.LabelNotifier.Text = StringLoader.GetText("form_label_notifier_label_original_files_success");
                 }
                 else
                 {
-                    Methods.DeleteBackups();
+                    string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+                    if (!Methods.LoadVerIni(out IniFile clientIni, clientIniPath))
+                    {
+                        throw new Exception(StringLoader.GetText("exception_generic_read_error", clientIniPath));
+                    }
+                    IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
+
+                    string translationIniPath = Path.Combine(e.Language.Path, Strings.IniName.Translation);
+                    var translationIni = new IniFile();
+
+                    IniKey translationDateKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyDate, Methods.DateToString(e.Language.LastUpdate));
+                    IniKey translationRegionKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyRegion, e.Language.ApplyingRegionId);
+                    IniSection translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey, translationRegionKey);
+
+                    translationIni.Sections.Add(translationPatcherSection);
+                    translationIni.Sections.Add(clientVerSection.Copy(translationIni));
+                    translationIni.Save(translationIniPath);
                 }
 
                 if (UserSettings.HasSound)
@@ -252,6 +284,10 @@ namespace ClosersPatcher.Forms
 
                 return;
             }
+            else
+            {
+                this.LabelNotifier.Text = StringLoader.GetText("form_label_notifier_label_apply_patch_success");
+            }
 
             this.CurrentState = State.Idle;
         }
@@ -269,9 +305,7 @@ namespace ClosersPatcher.Forms
             }
             else
             {
-                Language language = this.ComboBoxLanguages.SelectedItem as Language;
-
-                this.ResetTranslation(language);
+                this.LabelNotifier.Text = StringLoader.GetText("form_label_notifier_label_remove_patch_success");
             }
 
             this.CurrentState = State.Idle;
