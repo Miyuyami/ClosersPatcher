@@ -23,7 +23,6 @@ namespace ClosersPatcher.General
         internal string Id { get; }
         internal string Name { get; }
         internal Language[] AppliedLanguages { get; }
-        internal string Path => this.Id;
 
         internal Region(string id)
         {

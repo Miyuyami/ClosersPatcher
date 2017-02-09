@@ -122,8 +122,7 @@ namespace ClosersPatcher.Helpers
             }
 
             IniSection clientVerSection = patcherIni.Sections[Strings.IniName.Patcher.Section];
-            if (!clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyDate) ||
-                !clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
+            if (!clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyDate))
             {
                 return false;
             }

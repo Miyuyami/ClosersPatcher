@@ -113,7 +113,7 @@
             this.ButtonApplyPatch.Location = new System.Drawing.Point(58, 205);
             this.ButtonApplyPatch.Name = "ButtonApplyPatch";
             this.ButtonApplyPatch.Size = new System.Drawing.Size(120, 26);
-            this.ButtonApplyPatch.TabIndex = 3;
+            this.ButtonApplyPatch.TabIndex = 6;
             this.ButtonApplyPatch.UseVisualStyleBackColor = true;
             this.ButtonApplyPatch.Click += new System.EventHandler(this.ButtonApplyPatch_Click);
             // 
@@ -124,7 +124,7 @@
             this.ButtonRemovePatch.Location = new System.Drawing.Point(184, 205);
             this.ButtonRemovePatch.Name = "ButtonRemovePatch";
             this.ButtonRemovePatch.Size = new System.Drawing.Size(120, 26);
-            this.ButtonRemovePatch.TabIndex = 4;
+            this.ButtonRemovePatch.TabIndex = 7;
             this.ButtonRemovePatch.UseVisualStyleBackColor = true;
             this.ButtonRemovePatch.Click += new System.EventHandler(this.ButtonRemovePatch_Click);
             // 
@@ -170,7 +170,7 @@
             this.ButtonDownload.Location = new System.Drawing.Point(112, 171);
             this.ButtonDownload.Name = "ButtonDownload";
             this.ButtonDownload.Size = new System.Drawing.Size(140, 24);
-            this.ButtonDownload.TabIndex = 2;
+            this.ButtonDownload.TabIndex = 5;
             this.ButtonDownload.UseVisualStyleBackColor = true;
             this.ButtonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
             // 
@@ -194,7 +194,7 @@
             this.ButtonExit.Location = new System.Drawing.Point(132, 265);
             this.ButtonExit.Name = "ButtonExit";
             this.ButtonExit.Size = new System.Drawing.Size(100, 28);
-            this.ButtonExit.TabIndex = 5;
+            this.ButtonExit.TabIndex = 9;
             this.ButtonExit.UseVisualStyleBackColor = true;
             this.ButtonExit.Click += new System.EventHandler(this.Exit_Click);
             // 
@@ -208,7 +208,7 @@
             this.LabelNewTranslations.Location = new System.Drawing.Point(182, 151);
             this.LabelNewTranslations.Name = "LabelNewTranslations";
             this.LabelNewTranslations.Size = new System.Drawing.Size(0, 13);
-            this.LabelNewTranslations.TabIndex = 1;
+            this.LabelNewTranslations.TabIndex = 4;
             // 
             // ComboBoxLanguages
             // 
@@ -218,7 +218,7 @@
             this.ComboBoxLanguages.Location = new System.Drawing.Point(248, 129);
             this.ComboBoxLanguages.Name = "ComboBoxLanguages";
             this.ComboBoxLanguages.Size = new System.Drawing.Size(80, 21);
-            this.ComboBoxLanguages.TabIndex = 0;
+            this.ComboBoxLanguages.TabIndex = 3;
             this.ComboBoxLanguages.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxLanguages_SelectionChangeCommitted);
             // 
             // LabelLanguagePick
@@ -229,7 +229,7 @@
             this.LabelLanguagePick.Location = new System.Drawing.Point(242, 131);
             this.LabelLanguagePick.Name = "LabelLanguagePick";
             this.LabelLanguagePick.Size = new System.Drawing.Size(0, 13);
-            this.LabelLanguagePick.TabIndex = 8;
+            this.LabelLanguagePick.TabIndex = 2;
             this.LabelLanguagePick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LabelRegionPick
@@ -240,7 +240,7 @@
             this.LabelRegionPick.Location = new System.Drawing.Point(65, 131);
             this.LabelRegionPick.Name = "LabelRegionPick";
             this.LabelRegionPick.Size = new System.Drawing.Size(0, 13);
-            this.LabelRegionPick.TabIndex = 9;
+            this.LabelRegionPick.TabIndex = 0;
             this.LabelRegionPick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ComboBoxRegions
@@ -251,7 +251,7 @@
             this.ComboBoxRegions.Location = new System.Drawing.Point(71, 129);
             this.ComboBoxRegions.Name = "ComboBoxRegions";
             this.ComboBoxRegions.Size = new System.Drawing.Size(80, 21);
-            this.ComboBoxRegions.TabIndex = 10;
+            this.ComboBoxRegions.TabIndex = 1;
             this.ComboBoxRegions.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxRegions_SelectionChangeCommitted);
             // 
             // LabelNotifier
@@ -264,7 +264,7 @@
             this.LabelNotifier.Location = new System.Drawing.Point(182, 239);
             this.LabelNotifier.Name = "LabelNotifier";
             this.LabelNotifier.Size = new System.Drawing.Size(0, 13);
-            this.LabelNotifier.TabIndex = 11;
+            this.LabelNotifier.TabIndex = 8;
             // 
             // MenuStrip
             // 

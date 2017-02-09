@@ -71,7 +71,6 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             internal static class Patcher
             {
                 internal const string Section = "Patcher";
-                internal const string KeyRegion = "region";
                 internal const string KeyDate = "date";
             }
 
@@ -85,12 +84,15 @@ namespace ClosersPatcher.Helpers.GlobalVariables
 
         internal static class Xml
         {
-            internal const string Name = "name";
             internal const string Value = "value";
             internal const string Regions = "regions";
             internal const string Languages = "languages";
             internal const string Supports = "supports";
-            internal const string Format = "format";
+
+            internal static class Attributes
+            {
+                internal const string Name = "name";
+            }
         }
     }
 }

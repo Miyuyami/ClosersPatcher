@@ -82,7 +82,14 @@ namespace ClosersPatcher.Downloading
                 {
                     if (Methods.IsTranslationSupported(this.Language))
                     {
-                        if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
+                        bool isTranslationOutdated = Methods.IsTranslationOutdated(this.Language);
+
+                        if (isTranslationOutdated)
+                        {
+                            Methods.DeleteBackups(this.Language);
+                        }
+
+                        if (Methods.HasNewTranslations(this.Language) || isTranslationOutdated)
                         {
                             if (this.Worker.CancellationPending)
                             {

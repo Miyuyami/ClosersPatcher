@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="ClosersPatcher.exe" version="1.1.1.0" publicKeyToken="2433871cff3bf737" language="en" processorArchitecture="msil" type="win32" />
+  <description asmv2:iconFile="patcher.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="ClosersPatcher" version="1.1.1.0" publicKeyToken="2433871CFF3BF737" language="neutral" processorArchitecture="msil" />
+    <commandLine file="ClosersPatcher.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="LocalIntranet" Description="Default rights given to applications on the local intranet" Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!-- UAC Manifest Options
+             If you want to change the Windows User Account Control level replace the 
+             requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+            Specifying requestedExecutionLevel element will disable file and registry virtualization. 
+            Remove this element if your application requires this virtualization for backwards
+            compatibility.
+        -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClosersPatcher.exe" size="463832">
+      <assemblyIdentity name="ClosersPatcher" version="1.1.1.0" publicKeyToken="2433871CFF3BF737" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>Va9eWxU2PknHgwcF7s6xRtlCke4=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MadMilkman.Ini.dll" size="40960">
+      <assemblyIdentity name="MadMilkman.Ini" version="1.0.6.2" publicKeyToken="4E0B5157A7FFBB74" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>h6gPkotk7DgckLDDI1vVd9y60Dw=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="ClosersPatcher.exe.config" size="1535">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>JcCcHmatm2yRuNGGMkB0U3G7tyI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="ClosersPatcher.pdb" size="173568">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>Ehslcnb0l8AzeuI8Yy0RvD5PYGI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="patcher.ico" size="82910">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>+Szy8DHPMsWyVR/fV23oQTuObQE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- A list of the Windows versions that this application has been tested on and is
+           is designed to work with. Uncomment the appropriate elements and Windows will 
+           automatically selected the most compatible environment. -->
+      <!-- Windows Vista -->
+      <!--<supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}" />-->
+      <!-- Windows 7 -->
+      <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" />-->
+      <!-- Windows 8 -->
+      <!--<supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" />-->
+      <!-- Windows 8.1 -->
+      <!--<supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />-->
+      <!-- Windows 10 -->
+      <!--<supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />-->
+    </application>
+  </compatibility>
+<publisherIdentity name="CN=DESKTOP-DIHFG0N\Miyu" issuerKeyHash="62ba26b1986abbdb99dd704c7ffb959704077e86" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>iTTmTn3cferRdzVu9I/GmjIsi3w=</DigestValue></Reference></SignedInfo><SignatureValue>aJyjko3SMWSzyvxySJFg4dW2GqocTNAV+N02ef8WAjPEpiM9N7eI9+roGL4Cdi85Dl0BcGnfQ59wTS9zdASAom/RqZ3xuzpvyZ222Hj/GNsvh2W5ABTRgtbMJPOqxbBhInFbT6Et7EajjqLS0ChbKBwP2F+bujoRQDTI5hsDz4c=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>j68vX4WBEzHqqQSzuXUQHbbDEMruLZPNXBrKh3fz9Rubb9FLdCpP2+swcthkctahRKEcmr/5kMkOEpEklbT2aN9TnNbL6fFU5vM4GG/BnPHlzOaKH4A8XPPuiF8EM7B+IYGIE6SAPbjFtBihwKd+Lban//2pxfHs7ImuirtriKs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="7c8b2c329ac68ff46e3577d1ea7ddc7d4ee63489" Description="" Url=""><as:assemblyIdentity name="ClosersPatcher.exe" version="1.1.1.0" publicKeyToken="2433871cff3bf737" language="en" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-DIHFG0N\Miyu</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>untkEMaFmyG9KuBhVcMNU2kn7ZA=</DigestValue></Reference></SignedInfo><SignatureValue>cw6u8yPyYSo6ALeZVp15ZuNUp/AZD+d+AGla3NRbFyeLY+OPuCdgix7dLxTNipNN9Ju2EBzghsOMX/9MXVdu9uUZ920kw2JartpixjPFTpHwPR9rd3aB7/Kim5ZET0l/GKQge1T7hnNsOzM3ficOXgelbVVR2ge4pEs5JF5XRM8=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>j68vX4WBEzHqqQSzuXUQHbbDEMruLZPNXBrKh3fz9Rubb9FLdCpP2+swcthkctahRKEcmr/5kMkOEpEklbT2aN9TnNbL6fFU5vM4GG/BnPHlzOaKH4A8XPPuiF8EM7B+IYGIE6SAPbjFtBihwKd+Lban//2pxfHs7ImuirtriKs=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB6TCCAVKgAwIBAgIQdYcR2kjSJo9DZoJIS941pzANBgkqhkiG9w0BAQsFADAzMTEwLwYDVQQDHigARABFAFMASwBUAE8AUAAtAEQASQBIAEYARwAwAE4AXABNAGkAeQB1MB4XDTE2MTIxNzAzMTEzMFoXDTE3MTIxNzA5MTEzMFowMzExMC8GA1UEAx4oAEQARQBTAEsAVABPAFAALQBEAEkASABGAEcAMABOAFwATQBpAHkAdTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAj68vX4WBEzHqqQSzuXUQHbbDEMruLZPNXBrKh3fz9Rubb9FLdCpP2+swcthkctahRKEcmr/5kMkOEpEklbT2aN9TnNbL6fFU5vM4GG/BnPHlzOaKH4A8XPPuiF8EM7B+IYGIE6SAPbjFtBihwKd+Lban//2pxfHs7ImuirtriKsCAwEAATANBgkqhkiG9w0BAQsFAAOBgQAJ50scQE7GVZ95Z63uWKkp+NsWaIrUlPbrgLVbLH4PtTXwge4/Gyik9w/wzbIKJpzn3fhpiYyOYPOAkmv5/MkDuuUjzkA/E5eZf+ZDqYOwVIQDAeYiB2/2YEWOgKHhvH+b7AyxbNHw1RN714LM+ywTn/Z4hz19PMqjzhJH/26yKg==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

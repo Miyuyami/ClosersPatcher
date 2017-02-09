@@ -90,7 +90,7 @@ namespace ClosersPatcher.Forms
                         this.ComboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
                     }
 
-                    ComboBoxLanguages_SelectionChangeCommitted(sender, e);
+                    this.ComboBoxLanguages_SelectionChangeCommitted(sender, e);
                 }
 
                 switch (region.Id)
@@ -208,6 +208,10 @@ namespace ClosersPatcher.Forms
             if (e.CloseReason.In(CloseReason.ApplicationExitCall, CloseReason.WindowsShutDown))
             {
                 Logger.Info($"{this.Text} closing abnormally. Reason=[{e.CloseReason.ToString()}]");
+                this.CurrentState = State.Idle;
+                this.Downloader.Cancel();
+                this.PatchApplier.Cancel();
+                this.PatchRemover.Cancel();
             }
             else if (!this.CurrentState.In(State.Idle, State.RegionNotInstalled))
             {

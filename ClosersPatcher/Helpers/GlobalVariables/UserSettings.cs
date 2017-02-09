@@ -64,7 +64,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
                 value = value.Replace("\\\\", "\\");
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
-                Logger.Info($"Soulworker path set to [{value}]");
+                Logger.Info($"Game path set to [{value}]");
             }
         }
 

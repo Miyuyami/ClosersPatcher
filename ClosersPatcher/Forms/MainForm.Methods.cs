@@ -96,7 +96,7 @@ namespace ClosersPatcher.Forms
                 XmlNode regionNode = xmlRegions.ChildNodes[i];
 
                 string regionId = regionNode.Name;
-                string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Name].Value);
+                string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Attributes.Name].Value);
                 XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
                 int languageCount = xmlLanguages.ChildNodes.Count;
                 Language[] regionLanguages = new Language[languageCount];
@@ -106,7 +106,7 @@ namespace ClosersPatcher.Forms
                     XmlNode languageNode = xmlLanguages.ChildNodes[j];
 
                     string languageId = languageNode.Name;
-                    string languageName = languageNode.Attributes[Strings.Xml.Name].Value;
+                    string languageName = languageNode.Attributes[Strings.Xml.Attributes.Name].Value;
                     string languageDateString = languageNode[Strings.Xml.Value].InnerText;
                     DateTime languageDate = Methods.ParseDate(languageDateString);
 
@@ -130,7 +130,7 @@ namespace ClosersPatcher.Forms
                     this.ComboBoxRegions.SelectedIndex = index == -1 ? 0 : index;
                 }
 
-                ComboBoxRegions_SelectionChangeCommitted(this, EventArgs.Empty);
+                this.ComboBoxRegions_SelectionChangeCommitted(this, EventArgs.Empty);
             }
         }
 

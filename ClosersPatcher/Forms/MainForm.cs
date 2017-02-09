@@ -161,7 +161,8 @@ namespace ClosersPatcher.Forms
             this.InitializeComponent();
             this.InitializeTextComponent();
             this.InitializeComponentAdditionalEvents();
-            Logger.Info($"[{this.Text}] starting in UI Language=[{UserSettings.UILanguageCode}]");
+
+            Logger.Info($"[{this.Text}] starting in UI Language [{UserSettings.UILanguageCode}]; Patcher Folder [{UserSettings.GamePath}]");
         }
 
         private void InitializeTextComponent()
@@ -245,8 +246,7 @@ namespace ClosersPatcher.Forms
                     var translationIni = new IniFile();
 
                     IniKey translationDateKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyDate, Methods.DateToString(e.Language.LastUpdate));
-                    IniKey translationRegionKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyRegion, e.Language.ApplyingRegionId);
-                    IniSection translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey, translationRegionKey);
+                    IniSection translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey);
 
                     translationIni.Sections.Add(translationPatcherSection);
                     translationIni.Sections.Add(clientVerSection.Copy(translationIni));
