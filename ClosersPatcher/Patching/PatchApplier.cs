@@ -99,7 +99,7 @@ namespace ClosersPatcher.Patching
             IEnumerable<string> otherGameFiles = gameFileTypeLookup[typeof(ClosersFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
             IEnumerable<string> translationFiles = otherGameFiles.Select(f => Path.Combine(language.Path, f));
 
-            foreach (var path in translationFiles)
+            foreach (string path in translationFiles)
             {
                 if (!File.Exists(path))
                 {
@@ -117,7 +117,7 @@ namespace ClosersPatcher.Patching
             IEnumerable<string> otherGameFiles = gameFileTypeLookup[typeof(ClosersFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
             IEnumerable<string> translationFiles = otherGameFiles;
 
-            foreach (var path in translationFiles)
+            foreach (string path in translationFiles)
             {
                 string originalFilePath = Path.Combine(UserSettings.GamePath, path);
                 string translationFilePath = Path.Combine(language.Path, path);
