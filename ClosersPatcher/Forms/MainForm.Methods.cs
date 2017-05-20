@@ -84,7 +84,7 @@ namespace ClosersPatcher.Forms
         private void InitRegionsConfigData()
         {
             var doc = new XmlDocument();
-            doc.Load(Urls.TranslationHome + Strings.IniName.LanguagePack);
+            doc.Load(Path.Combine(Uris.TranslationHome, Strings.IniName.LanguagePack));
 
             XmlElement configRoot = doc.DocumentElement;
             XmlElement xmlRegions = configRoot[Strings.Xml.Regions];
@@ -97,6 +97,7 @@ namespace ClosersPatcher.Forms
 
                 string regionId = regionNode.Name;
                 string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Attributes.Name].Value);
+                string regionUri = regionNode[Strings.Xml.Uri].InnerText;
                 XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
                 int languageCount = xmlLanguages.ChildNodes.Count;
                 Language[] regionLanguages = new Language[languageCount];
@@ -108,12 +109,13 @@ namespace ClosersPatcher.Forms
                     string languageId = languageNode.Name;
                     string languageName = languageNode.Attributes[Strings.Xml.Attributes.Name].Value;
                     string languageDateString = languageNode[Strings.Xml.Value].InnerText;
+                    string languageUri = languageNode[Strings.Xml.Uri].InnerText;
                     DateTime languageDate = Methods.ParseDate(languageDateString);
 
-                    regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId);
+                    regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId, languageUri);
                 }
 
-                regions[i] = new Region(regionId, regionName, regionLanguages);
+                regions[i] = new Region(regionId, regionName, regionLanguages, regionUri);
             }
 
             this.ComboBoxRegions.DataSource = regions.Length > 0 ? regions : null;

@@ -28,12 +28,12 @@ namespace ClosersPatcher.Downloading
         internal string FileName { get; }
         internal int Progress { get; }
 
-        internal DownloaderProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, DownloadProgressChangedEventArgs e)
+        internal DownloaderProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, int currentPart, int totalParts, DownloadProgressChangedEventArgs e)
         {
             this.FileNumber = fileNumber;
             this.FileCount = fileCount;
             this.FileName = fileName;
-            this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double)e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);
+            this.Progress = e.BytesReceived == e.TotalBytesToReceive && currentPart == totalParts ? Int32.MaxValue : Convert.ToInt32((e.BytesReceived / (double)e.TotalBytesToReceive / totalParts + (currentPart - 1d) / totalParts) * Int32.MaxValue);
         }
     }
 }

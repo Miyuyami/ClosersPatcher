@@ -22,6 +22,7 @@ namespace ClosersPatcher.General
     {
         internal string Id { get; }
         internal string Name { get; }
+        internal string BaseUrl { get; }
         internal Language[] AppliedLanguages { get; }
 
         internal Region(string id)
@@ -29,11 +30,12 @@ namespace ClosersPatcher.General
             this.Id = id;
         }
 
-        internal Region(string id, string name, Language[] appliedLanguages)
+        internal Region(string id, string name, Language[] appliedLanguages, string baseUrl)
         {
             this.Id = id;
             this.Name = name;
             this.AppliedLanguages = appliedLanguages;
+            this.BaseUrl = baseUrl;
         }
 
         public override bool Equals(object obj)
@@ -43,7 +45,7 @@ namespace ClosersPatcher.General
                 return false;
             }
 
-            Region region = obj as Region;
+            var region = obj as Region;
             return this.Id == region.Id;
         }
 

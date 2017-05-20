@@ -182,7 +182,9 @@ namespace ClosersPatcher.Forms
             this.ButtonApply.Enabled = false;
 
             if (this.PendingRestart)
+            {
                 MsgBox.Notice(StringLoader.GetText("notice_pending_restart"));
+            }
         }
 
         private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)
@@ -190,7 +192,7 @@ namespace ClosersPatcher.Forms
             string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
 
-            foreach (var folder in movingFolders)
+            foreach (string folder in movingFolders)
             {
                 MoveDirectory(Path.Combine(oldPath, folder), newPath);
             }
@@ -205,11 +207,15 @@ namespace ClosersPatcher.Forms
                 string destination = Path.Combine(newPath, Path.GetFileName(directory));
                 Directory.CreateDirectory(destination);
 
-                foreach (var dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
+                foreach (string dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
+                {
                     Directory.CreateDirectory(dirPath.Replace(directory, destination));
+                }
 
-                foreach (var filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                foreach (string filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                {
                     MoveFile(filePath, filePath.Replace(directory, destination), true);
+                }
 
                 Directory.Delete(directory, true);
                 return true;

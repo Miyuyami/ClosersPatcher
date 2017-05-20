@@ -28,6 +28,8 @@ namespace ClosersPatcher.General
         internal DateTime LastUpdate { get; }
         internal string ApplyingRegionId { get; }
         internal string Path => System.IO.Path.Combine(this.ApplyingRegionId, this.Name);
+        internal string BaseUri { get; }
+        internal string WebPath => System.IO.Path.Combine(this.BaseUri, this.Path);
         internal string BackupPath => System.IO.Path.Combine(this.ApplyingRegionId, Strings.FolderName.Backup);
 
         internal Language(string id)
@@ -35,24 +37,26 @@ namespace ClosersPatcher.General
             this.Id = id;
         }
 
-        private Language(string id, string name, string applyingRegionId)
+        private Language(string id, string name, string applyingRegionId, string baseUrl)
         {
             this.Id = id;
             this.Name = name;
             this.ApplyingRegionId = applyingRegionId;
+            this.BaseUri = String.IsNullOrEmpty(baseUrl) ? Uris.TranslationHome : baseUrl;
         }
 
-        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId)
+        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId, string baseUrl)
         {
             this.Id = id;
             this.Name = name;
             this.LastUpdate = lastUpdate;
             this.ApplyingRegionId = applyingRegionId;
+            this.BaseUri = String.IsNullOrEmpty(baseUrl) ? Uris.TranslationHome : baseUrl;
         }
 
-        internal static Language BackupLanguage(string applyingRegionId)
+        internal static Language BackupLanguage(string applyingRegionId, string baseUrl)
         {
-            return new Language("bak", Strings.FolderName.Backup, applyingRegionId);
+            return new Language("bak", Strings.FolderName.Backup, applyingRegionId, baseUrl);
         }
 
         public override bool Equals(object obj)
@@ -62,7 +66,7 @@ namespace ClosersPatcher.General
                 return false;
             }
 
-            Language language = obj as Language;
+            var language = obj as Language;
             return this.Id == language.Id;
         }
 

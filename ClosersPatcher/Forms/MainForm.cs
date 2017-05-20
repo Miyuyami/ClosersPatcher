@@ -16,16 +16,16 @@
  * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using ClosersPatcher.Downloading;
-using ClosersPatcher.Helpers;
-using ClosersPatcher.Helpers.GlobalVariables;
-using ClosersPatcher.Patching;
-using MadMilkman.Ini;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Media;
 using System.Windows.Forms;
+using ClosersPatcher.Downloading;
+using ClosersPatcher.Helpers;
+using ClosersPatcher.Helpers.GlobalVariables;
+using ClosersPatcher.Patching;
+using MadMilkman.Ini;
 
 namespace ClosersPatcher.Forms
 {
@@ -245,8 +245,8 @@ namespace ClosersPatcher.Forms
                     string translationIniPath = Path.Combine(e.Language.Path, Strings.IniName.Translation);
                     var translationIni = new IniFile();
 
-                    IniKey translationDateKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyDate, Methods.DateToString(e.Language.LastUpdate));
-                    IniSection translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey);
+                    var translationDateKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyDate, Methods.DateToString(e.Language.LastUpdate));
+                    var translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey);
 
                     translationIni.Sections.Add(translationPatcherSection);
                     translationIni.Sections.Add(clientVerSection.Copy(translationIni));
@@ -255,7 +255,7 @@ namespace ClosersPatcher.Forms
 
                 if (UserSettings.HasSound)
                 {
-                    using (SoundPlayer player = new SoundPlayer(Properties.Resources.notification_download_completed))
+                    using (var player = new SoundPlayer(Properties.Resources.notification_download_completed))
                     {
                         player.Play();
                     }

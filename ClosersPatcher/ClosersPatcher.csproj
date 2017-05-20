@@ -28,10 +28,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Closers Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
-    <MinimumRequiredVersion>1.1.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.2.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.1.1.0</ApplicationVersion>
+    <ApplicationVersion>1.2.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -88,13 +88,25 @@
   <PropertyGroup>
     <StartupObject>ClosersPatcher.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PublicTest|AnyCPU'">
+    <OutputPath>bin\PublicTest\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>PUBLIC_TEST</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MadMilkman.Ini">
-      <HintPath>..\..\MadmilkMan.IniTest\MadMilkman.Ini.dll</HintPath>
+      <HintPath>.\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -128,7 +140,7 @@
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\GlobalVariables\AssemblyAccessor.cs" />
     <Compile Include="Helpers\GlobalVariables\Strings.cs" />
-    <Compile Include="Helpers\GlobalVariables\Urls.cs" />
+    <Compile Include="Helpers\GlobalVariables\Uris.cs" />
     <Compile Include="Helpers\GlobalVariables\UserSettings.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\Methods.cs" />
@@ -184,6 +196,7 @@
       <LastGenOutput>en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

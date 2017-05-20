@@ -32,8 +32,11 @@ namespace ClosersPatcher.General
         public override bool Equals(object obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
+            {
                 return false;
-            ResxLanguage language = obj as ResxLanguage;
+            }
+
+            var language = obj as ResxLanguage;
             return this.Language == language.Language;
         }
 

@@ -155,7 +155,7 @@ namespace ClosersPatcher.Helpers
 #if DEBUG
             return true;
 #endif
-            IniFile regionIni = GetIniFromUrl(Urls.ClosersSettingsHome + Strings.IniName.ClientVer);
+            IniFile regionIni = GetIniFromUrl(Uris.ClosersSettingsHome + Strings.IniName.ClientVer);
             IniSection regionVerSection = regionIni.Sections[Strings.IniName.Ver.Section];
 
             string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
@@ -221,7 +221,7 @@ namespace ClosersPatcher.Helpers
 #if DEBUG
             return true;
 #endif
-            IniFile supportedTranslationIni = GetIniFromUrl(Urls.TranslationHome + language.Path + '/' + Strings.IniName.ClientVer);
+            IniFile supportedTranslationIni = GetIniFromUrl(language.WebPath + '/' + Strings.IniName.ClientVer);
             IniSection supportedTranslationVerSection = supportedTranslationIni.Sections[Strings.IniName.Ver.Section];
 
             string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
@@ -254,7 +254,7 @@ namespace ClosersPatcher.Helpers
             {
                 string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
-                foreach (var file in filePaths)
+                foreach (string file in filePaths)
                 {
                     File.Delete(file);
                 }
@@ -289,8 +289,8 @@ namespace ClosersPatcher.Helpers
                 {
                     byte[] iniData = client.DownloadData(url);
 
-                    IniFile ini = new IniFile();
-                    using (MemoryStream ms = new MemoryStream(iniData))
+                    var ini = new IniFile();
+                    using (var ms = new MemoryStream(iniData))
                     {
                         ini.Load(ms);
                     }

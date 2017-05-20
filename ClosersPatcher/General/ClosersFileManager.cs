@@ -16,12 +16,13 @@
  * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using ClosersPatcher.Helpers.GlobalVariables;
-using MadMilkman.Ini;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
+using ClosersPatcher.Helpers.GlobalVariables;
+using MadMilkman.Ini;
 
 namespace ClosersPatcher.General
 {
@@ -36,7 +37,7 @@ namespace ClosersPatcher.General
         {
             if (ClosersFiles == null)
             {
-                InternalLoadFileConfiguration(Urls.TranslationHome + language.Path + '/' + Strings.IniName.TranslationPackData);
+                InternalLoadFileConfiguration(language.WebPath + '/' + Strings.IniName.TranslationPackData);
             }
         }
 
@@ -50,7 +51,7 @@ namespace ClosersPatcher.General
                 packData = client.DownloadData(url);
             }
 
-            IniFile ini = new IniFile();
+            var ini = new IniFile();
             using (var stream = new MemoryStream(packData))
             {
                 ini.Load(stream);
@@ -62,7 +63,17 @@ namespace ClosersPatcher.General
                 string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
                 string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
 
-                ClosersFiles.Add(new ClosersFile(name, path, pathD));
+                if (section.Keys[Strings.IniName.Pack.KeyParts] != null &&
+                    !String.IsNullOrEmpty(section.Keys[Strings.IniName.Pack.KeyParts].Value) &&
+                    Int32.TryParse(section.Keys[Strings.IniName.Pack.KeyParts].Value, out int parts) &&
+                    parts > 0)
+                {
+                    ClosersFiles.Add(new ClosersFile(name, path, pathD, parts));
+                }
+                else
+                {
+                    ClosersFiles.Add(new ClosersFile(name, path, pathD, 1));
+                }
             }
         }
     }

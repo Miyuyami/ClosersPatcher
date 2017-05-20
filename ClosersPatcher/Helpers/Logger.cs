@@ -120,13 +120,16 @@ namespace ClosersPatcher.Helpers
         {
             string result = ex.Message;
             if (ex.InnerException != null)
+            {
                 result += "\n\n" + ex.InnerException.Message;
+            }
+
             return result;
         }
 
         internal static void Run()
         {
-            Thread thread = new Thread(() =>
+            var thread = new Thread(() =>
             {
                 foreach (LogMessage msg in _messages.GetConsumingEnumerable())
                 {

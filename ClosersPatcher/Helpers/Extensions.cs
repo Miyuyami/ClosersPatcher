@@ -53,7 +53,7 @@ namespace ClosersPatcher.Helpers
         {
             using (var reader = new StreamReader(new MemoryStream(byteArray), encoding))
             {
-                List<string> result = new List<string>();
+                var result = new List<string>();
                 string line;
 
                 while ((line = reader.ReadLine()) != null)

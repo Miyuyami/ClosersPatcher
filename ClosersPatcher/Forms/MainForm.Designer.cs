@@ -102,7 +102,7 @@
             // ToolStripStatusLabel
             // 
             this.ToolStripStatusLabel.Name = "ToolStripStatusLabel";
-            this.ToolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.ToolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Always;
             this.ToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // ButtonApplyPatch

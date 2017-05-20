@@ -86,7 +86,7 @@ namespace ClosersPatcher.Patching
 
             string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
-            foreach (var file in filePaths)
+            foreach (string file in filePaths)
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(language.BackupPath.Length + 1));
                 Logger.Info($"Restoring file original=[{path}] backup=[{file}]");

@@ -2,8 +2,10 @@
 <closersPatcher>
   <regions>
     <kr name="form_region_kr">
+      <uri>https://gitlab.com/Yukarin/Translation/raw/master</uri>
       <languages>
         <en name="English">
+          <uri>https://gitlab.com/Yukarin/Translation/raw/master</uri>
           <value>17/May/2017 5:04 PM</value>
         </en>
       </languages>

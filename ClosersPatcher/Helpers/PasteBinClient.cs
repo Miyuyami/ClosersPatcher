@@ -55,16 +55,24 @@ namespace ClosersPatcher.Helpers
         internal PasteBinClient(string apiDevKey)
         {
             if (String.IsNullOrEmpty(apiDevKey))
+            {
                 throw new ArgumentNullException("apiDevKey");
+            }
+
             this.ApiDevKey = apiDevKey;
         }
 
         internal void Login(string userName, string password)
         {
             if (String.IsNullOrEmpty(userName))
+            {
                 throw new ArgumentNullException("userName");
+            }
+
             if (String.IsNullOrEmpty(password))
+            {
                 throw new ArgumentNullException("password");
+            }
 
             NameValueCollection parameters = GetBaseParameters();
             parameters[ApiParameters.UserName] = userName;
@@ -72,10 +80,15 @@ namespace ClosersPatcher.Helpers
 
             byte[] bytes;
             using (var client = new WebClient())
+            {
                 bytes = client.UploadValues(ApiLoginUrl, parameters);
+            }
+
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
+            {
                 throw new PasteBinApiException(resp);
+            }
 
             this.UserName = userName;
             this.ApiUserKey = resp;
@@ -90,9 +103,14 @@ namespace ClosersPatcher.Helpers
         internal string Paste(PasteBinEntry entry)
         {
             if (entry == null)
+            {
                 throw new ArgumentNullException("entry");
+            }
+
             if (String.IsNullOrEmpty(entry.Text))
+            {
                 throw new ArgumentException("The paste text must be set", "entry");
+            }
 
             NameValueCollection parameters = GetBaseParameters();
             parameters[ApiParameters.Option] = "paste";
@@ -105,10 +123,15 @@ namespace ClosersPatcher.Helpers
 
             byte[] bytes;
             using (var client = new WebClient())
+            {
                 bytes = client.UploadValues(ApiPostUrl, parameters);
+            }
+
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
+            {
                 throw new PasteBinApiException(resp);
+            }
 
             return resp;
         }

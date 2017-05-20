@@ -51,7 +51,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
         internal static class FolderName
         {
             internal const string Data = "DAT";
-            internal const string Backup = "backup"; // TODO: each region with it's own backup
+            internal const string Backup = "backup";
         }
 
         internal static class IniName
@@ -78,6 +78,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             {
                 internal const string KeyPath = "path";
                 internal const string KeyPathOfDownload = "path_d";
+                internal const string KeyParts = "parts";
                 internal const string KeyBaseValue = "__base__";
             }
         }
@@ -88,6 +89,7 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             internal const string Regions = "regions";
             internal const string Languages = "languages";
             internal const string Supports = "supports";
+            internal const string Uri = "uri";
 
             internal static class Attributes
             {

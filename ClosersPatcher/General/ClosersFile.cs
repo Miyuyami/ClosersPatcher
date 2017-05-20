@@ -20,15 +20,17 @@ namespace ClosersPatcher.General
 {
     internal class ClosersFile
     {
-        internal string Name { get; private set; }
-        internal string Path { get; private set; }
-        internal string PathD { get; private set; }
+        internal string Name { get; }
+        internal string Path { get; }
+        internal string PathD { get; }
+        internal int Parts { get; }
 
-        internal ClosersFile(string name, string path, string pathD)
+        internal ClosersFile(string name, string path, string pathD, int parts)
         {
             this.Name = name;
             this.Path = path;
             this.PathD = pathD;
+            this.Parts = parts;
         }
     }
 }

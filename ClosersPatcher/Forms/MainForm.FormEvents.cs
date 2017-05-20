@@ -35,7 +35,7 @@ namespace ClosersPatcher.Forms
 
         private void ForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Language language = this.ComboBoxLanguages.SelectedItem as Language;
+            var language = this.ComboBoxLanguages.SelectedItem as Language;
 
             ResetTranslation(language);
 
@@ -123,7 +123,7 @@ namespace ClosersPatcher.Forms
 
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm();
+            var settingsForm = new SettingsForm();
             settingsForm.ShowDialog(this);
         }
 
@@ -137,11 +137,11 @@ namespace ClosersPatcher.Forms
             switch ((this.ComboBoxRegions.SelectedItem as Region).Id)
             {
                 case "kr":
-                    Process.Start(Urls.ClosersKRHome);
+                    Process.Start(Uris.ClosersKRHome);
 
                     break;
                 case "jp":
-                    Process.Start(Urls.ClosersJPHome);
+                    Process.Start(Uris.ClosersJPHome);
 
                     break;
                 default:
@@ -166,7 +166,7 @@ namespace ClosersPatcher.Forms
             byte[] logBytes = File.ReadAllBytes(Strings.FileName.Log);
             logBytes = TrimArrayIfNecessary(logBytes);
             string logText = BitConverter.ToString(logBytes).Replace("-", "");
-            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
+            string pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
 
             if (!String.IsNullOrEmpty(pasteUrl))
             {
@@ -182,7 +182,7 @@ namespace ClosersPatcher.Forms
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AboutBox aboutBox = new AboutBox();
+            var aboutBox = new AboutBox();
             aboutBox.ShowDialog(this);
         }
 

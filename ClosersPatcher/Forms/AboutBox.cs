@@ -40,14 +40,14 @@ namespace ClosersPatcher.Forms
             this.LabelProductName.Text = AssemblyAccessor.Product;
             this.LabelVersion.Text = $"Version {AssemblyAccessor.Version}";
             this.TextBoxDescription.Text = StringLoader.GetText("patcher_description");
-            this.LinkLabelWebsite.Links.Add(0, this.LinkLabelWebsite.Text.Length, Urls.ClosersWebsite);
+            this.LinkLabelWebsite.Links.Add(0, this.LinkLabelWebsite.Text.Length, Uris.ClosersWebsite);
             this.LogoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/ClosersPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
         }
 
         private void LinkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.LinkLabelWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Urls.ClosersWebsite);
+            System.Diagnostics.Process.Start(Uris.ClosersWebsite);
         }
     }
 }

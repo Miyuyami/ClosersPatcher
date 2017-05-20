@@ -29,9 +29,11 @@ namespace ClosersPatcher.Helpers.GlobalVariables
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
                 if (attributes.Length > 0)
                 {
-                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                    var titleAttribute = (AssemblyTitleAttribute)attributes[0];
                     if (titleAttribute.Title != "")
+                    {
                         return titleAttribute.Title;
+                    }
                 }
                 return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
@@ -43,11 +45,20 @@ namespace ClosersPatcher.Helpers.GlobalVariables
             {
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 if (attributes.Length == 0)
+                {
                     return "";
+                }
+
                 return ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
 
+#if PUBLIC_TEST
+        internal static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString() + " INTERNAL TEST";
+#elif DEBUG
+        internal static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString() + " DEBUG";
+#else
         internal static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+#endif
     }
 }

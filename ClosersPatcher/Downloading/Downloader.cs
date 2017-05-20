@@ -16,14 +16,14 @@
  * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using ClosersPatcher.General;
-using ClosersPatcher.Helpers;
-using ClosersPatcher.Helpers.GlobalVariables;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
+using ClosersPatcher.General;
+using ClosersPatcher.Helpers;
+using ClosersPatcher.Helpers.GlobalVariables;
 
 namespace ClosersPatcher.Downloading
 {
@@ -130,7 +130,10 @@ namespace ClosersPatcher.Downloading
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.DownloaderProgressChanged?.Invoke(sender, new DownloaderProgressChangedEventArgs((int)e.UserState + 1, ClosersFileManager.Count, Path.GetFileNameWithoutExtension(ClosersFileManager.GetElementAt((int)e.UserState).Name), e));
+            var (index, part) = (Tuple<int, int>)e.UserState;
+            ClosersFile currentFile = ClosersFileManager.GetElementAt(index);
+
+            this.DownloaderProgressChanged?.Invoke(sender, new DownloaderProgressChangedEventArgs(index + 1, ClosersFileManager.Count, currentFile.Name, part, currentFile.Parts, e));
         }
 
         private void Client_DownloadDataCompleted(object sender, DownloadDataCompletedEventArgs e)
@@ -141,25 +144,38 @@ namespace ClosersPatcher.Downloading
             }
             else
             {
-                var index = (int)e.UserState;
-                ClosersFile swFile = ClosersFileManager.GetElementAt(index);
+                var (index, part) = (Tuple<int, int>)e.UserState;
+                ClosersFile file = ClosersFileManager.GetElementAt(index);
 
-                string swFilePath;
+                string filePath;
 
                 if (this.IsDownloadingInClientFolder)
                 {
-                    swFilePath = Path.Combine(UserSettings.GamePath, swFile.Path, Path.GetFileName(swFile.PathD));
+                    filePath = Path.Combine(UserSettings.GamePath, file.Path, Path.GetFileName(file.PathD));
                 }
                 else
                 {
-                    swFilePath = Path.Combine(this.Language.Path, swFile.Path, Path.GetFileName(swFile.PathD));
+                    filePath = Path.Combine(this.Language.Path, file.Path, Path.GetFileName(file.PathD));
                 }
-                string swFileDirectory = swFileDirectory = Path.GetDirectoryName(swFilePath);
+                string fileDirectory = fileDirectory = Path.GetDirectoryName(filePath);
 
-                Directory.CreateDirectory(swFileDirectory);
-                File.WriteAllBytes(swFilePath, e.Result);
+                Directory.CreateDirectory(fileDirectory);
 
-                if (ClosersFileManager.Count > ++index)
+                if (part > 1)
+                {
+                    this.AppendPartFile(filePath, e.Result);
+                }
+                else
+                {
+                    File.WriteAllBytes(filePath, e.Result);
+                }
+
+                if (file.Parts > part)
+                {
+                    part++;
+                    this.DownloadNext(index, part);
+                }
+                else if (ClosersFileManager.Count > ++index)
                 {
                     this.DownloadNext(index);
                 }
@@ -172,11 +188,34 @@ namespace ClosersPatcher.Downloading
 
         private void DownloadNext(int index)
         {
-            Uri uri = new Uri(Urls.TranslationHome + this.Language.Path + '/' + ClosersFileManager.GetElementAt(index).PathD);
+            this.DownloadNext(index, 1);
+        }
 
-            this.Client.DownloadDataAsync(uri, index);
+        private void DownloadNext(int index, int part)
+        {
+            string splitFilePath;
+            if (part > 1)
+            {
+                splitFilePath = ClosersFileManager.GetElementAt(index).PathD + "." + part;
+            }
+            else
+            {
+                splitFilePath = ClosersFileManager.GetElementAt(index).PathD;
+            }
+
+            var uri = new Uri(Path.Combine(this.Language.WebPath, splitFilePath));
+
+            this.Client.DownloadDataAsync(uri, Tuple.Create(index, part));
 
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri));
+        }
+
+        private void AppendPartFile(string filePath, byte[] result)
+        {
+            using (var fs = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+            {
+                fs.Write(result, 0, result.Length);
+            }
         }
 
         internal void Cancel()
@@ -205,7 +244,7 @@ namespace ClosersPatcher.Downloading
             }
 
             this.IsDownloadingInClientFolder = true;
-            this.Language = Language.BackupLanguage(region.Id);
+            this.Language = Language.BackupLanguage(region.Id, region.BaseUrl);
             this.Worker.RunWorkerAsync();
         }
     }
